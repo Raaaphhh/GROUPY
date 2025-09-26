@@ -6,6 +6,6 @@
     <title>inscription - client</title>
 </head>
 <body>
-    
+        
 </body>
 </html>
