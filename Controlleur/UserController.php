@@ -1,29 +1,56 @@
 <?php
 
+require 'BddConnController.php';
+
 function register($data){
+    session_start();
     $pdo = connect_bd();
     if(!$pdo) {
         echo "Erreur de connexion à la base de données.";
         return false;
     }
     else{
+        // Vérifier si l'utilisateur existe déjà
         $user = get_user($data['email'], $data['password']);
         if($user){
             echo "L'utilisateur existe déjà.";
             return false;
         }
         else{
-            $data['password'] = password_hash($data['password'], PASSWORD_BCRYPT);
-            $req = "INSERT INTO user (nom, prenom, date_naissance, email, telephone, password, adresse, photo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $pdo->prepare($req);
-            $result = $stmt->execute(array_values($data));
-            if (!$result) {
-                echo "Erreur lors de l'insertion de l'utilisateur.";
-                return false;
-            } else {
-                $_SESSION['connectedUser'] = $existUser;
-                deconect_db($pdo);
-                header("Location: dashboard.php");
+            if($data && count($data) > 7){
+                // faut diviser le tableau en deux parties
+                // premiere partie pour utilisateur
+                // deuxieme partie pour vendeur
+                // a finir
+                // $userData = array_slice($data, 0, 7); exemple 
+                $req1 = "INSERT INTO utilisateur (nom, prenom, adresse, phone, email, motdepasse) VALUES (?, ?, ?, ?, ?, ?)";
+                $stmt = $pdo->prepare($req1);
+                $result = $stmt->execute(array_values($data));
+                // N'es pas fini
+                $idVenduer = $pdo->lastInsertId();
+                $req2 = "INSERT INTO vendeur (idUtilisateur) VALUES (?)"; // a finir
+            }
+            else {
+                $data['motdepasse'] = password_hash($data['motdepasse'], PASSWORD_BCRYPT);
+                $req1 = "INSERT INTO utilisateur (nom, prenom, adresse, phone, email, motdepasse) VALUES (?, ?, ?, ?, ?, ?)";
+                $stmt1 = $pdo->prepare($req1);
+                $result1 = $stmt1->execute(array_values($data));
+                
+                $idClient = $pdo->lastInsertId();
+                $req2 = "INSERT INTO client (id_user) VALUES ($idClient)";
+                $stmt2 = $pdo->prepare($req2);
+                $result2 = $stmt2->execute();
+                if (!$result1 || !$result2) {
+                    echo "Erreur lors de l'insertion de l'utilisateur.";
+                    return false;
+                }
+                else {
+                    $existUser = get_user($data['email'], $data['password']);
+                    $_SESSION['connectedUser'] = $existUser;
+                    deconect_db($pdo);
+                    header("Location: ../formCo.php");
+                    exit;
+                }
             }
         }
     }
