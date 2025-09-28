@@ -70,17 +70,16 @@ require '../../Controlleur/UserController.php';
 include '../../Layout/footer.php'; 
 
 if (isset($_POST['submit'])) {
-    array_pop($_POST);
-    try {
-        register($_POST);
-        echo "Inscription réussie !";
+  array_pop($_POST);
+  try {
+      register($_POST);
+      echo "Inscription réussie !";
 
-        header("Location: dashboard.php");
-        exit;
-    } catch (Exception $e) {
-        echo "Erreur d'inscription : " . $e->getMessage();
-        exit;
-    }
+      header("Location: dashboard.php");
+      exit;
+  } catch (Exception $e) {
+      echo "Erreur d'inscription : " . $e->getMessage();
+      exit;
+  }
 }
-
 ?>

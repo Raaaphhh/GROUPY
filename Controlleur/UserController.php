@@ -18,17 +18,30 @@ function register($data){
         }
         else{
             if($data && count($data) > 7){
-                // faut diviser le tableau en deux parties
-                // premiere partie pour utilisateur
-                // deuxieme partie pour vendeur
-                // a finir
-                // $userData = array_slice($data, 0, 7); exemple 
+                $data['motdepasse'] = password_hash($data['motdepasse'], PASSWORD_BCRYPT);
+                $data_part1 = array_slice($data, 0, 6);
+                $data_part2 = array_slice($data, 6); 
+
                 $req1 = "INSERT INTO utilisateur (nom, prenom, adresse, phone, email, motdepasse) VALUES (?, ?, ?, ?, ?, ?)";
-                $stmt = $pdo->prepare($req1);
-                $result = $stmt->execute(array_values($data));
-                // N'es pas fini
+                $stmt1 = $pdo->prepare($req1);
+                $result1 = $stmt1->execute(array_values($data_part1));
+
                 $idVenduer = $pdo->lastInsertId();
-                $req2 = "INSERT INTO vendeur (idUtilisateur) VALUES (?)"; // a finir
+                $req2 = "INSERT INTO vendeur (id_user, nom_entreprise, siret, adresse_entreprise, email_pro) VALUES (?, ?, ?, ?, ?)";
+                $fusion_data_id = array_merge([$idVenduer], array_values($data_part2));
+                $stmt2 = $pdo->prepare($req2);
+                $result2 = $stmt2->execute($fusion_data_id);
+                if (!$result1 || !$result2) {
+                    echo "Erreur lors de l'insertion de l'utilisateur.";
+                    return false;
+                }
+                else {
+                    $existUser = get_user($data['email'], $data['motdepasse']);
+                    $_SESSION['connectedUser'] = $existUser;
+                    deconect_db($pdo);
+                    header("Location: ../formCo.php");
+                    exit;
+                }
             }
             else {
                 $data['motdepasse'] = password_hash($data['motdepasse'], PASSWORD_BCRYPT);
@@ -45,7 +58,7 @@ function register($data){
                     return false;
                 }
                 else {
-                    $existUser = get_user($data['email'], $data['password']);
+                    $existUser = get_user($data['email'], $data['motdepasse']);
                     $_SESSION['connectedUser'] = $existUser;
                     deconect_db($pdo);
                     header("Location: ../formCo.php");
@@ -65,7 +78,7 @@ function get_user($email, $password){
     }
     else{
         try{
-            $req = "SELECT * FROM user WHERE email = ?";
+            $req = "SELECT * FROM utilisateur WHERE email = ?";
             $stmt = $pdo->prepare($req);
             $result = $stmt->execute([$email]);
             if (!$result) {
@@ -76,7 +89,7 @@ function get_user($email, $password){
             else{
                 if ($stmt->rowCount() > 0) {
                     $user = $stmt->fetch(PDO::FETCH_ASSOC);
-                    if(password_verify($password, $user['password'])) {
+                    if(password_verify($password, $user['motdepasse'])) {
                         deconect_db($pdo);
                         return $user;
                     } else {
