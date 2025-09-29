@@ -6,7 +6,6 @@ if (isset($_POST['submit'])) {
   array_pop($_POST);
   try {
       register($_POST);
-      header("Location: formCo.php");
       exit;
   } catch (Exception $e) {
       echo "Erreur d'inscription : " . $e->getMessage();
@@ -109,4 +108,4 @@ include '../../Layout/header.php';
 </div>
 </body>
 
-<?php include '../../Layout/footer.php'; ?>
+<?php require '../../Layout/footer.php'; ?>

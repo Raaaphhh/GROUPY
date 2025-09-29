@@ -5,12 +5,11 @@ require '../../Controlleur/UserController.php';
 if (isset($_POST['submit'])) {
   array_pop($_POST);
   try {
-      register($_POST);
-      header("Location: formCo.php");
-      exit;
+    register($_POST);
+    exit;
   } catch (Exception $e) {
-      echo "Erreur d'inscription : " . $e->getMessage();
-      exit;
+    echo "Erreur d'inscription : " . $e->getMessage();
+    exit;
   }
 }
 

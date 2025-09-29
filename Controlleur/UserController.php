@@ -2,10 +2,9 @@
 session_start();
 require 'BddConnController.php';
 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
 function register($data){
     $pdo = connect_bd();
@@ -45,7 +44,7 @@ function register($data){
                     $existUser = get_user($data['email'], $motdepasse_non_hash);
                     $_SESSION['connectedUser'] = $existUser;
                     deconect_db($pdo);
-                    header("Location: ../formCo.php");
+                    header("Location: formCo.php");
                     exit;
                 }
             }
@@ -69,7 +68,7 @@ function register($data){
                     $existUser = get_user($data['email'], $motdepasse_non_hash);
                     $_SESSION['connectedUser'] = $existUser;
                     deconect_db($pdo);
-                    header("Location: ../formCo.php");
+                    header("Location: formCo.php");
                     exit;
                 }
             }
@@ -123,7 +122,7 @@ function login($data){
         return false;
     }
     else{
-        $existUser = get_user($data['email'], $data['password']);
+        $existUser = get_user($data['email'], $data['motdepasse']);
         if($existUser){
             $_SESSION['connectedUser'] = $existUser;
             deconect_db($pdo);

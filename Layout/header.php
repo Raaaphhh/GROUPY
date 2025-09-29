@@ -40,7 +40,7 @@
                             <li><a class="dropdown-item text-primary" href="/groupy/Views/User/formRegVendeur.php">Inscription <strong>professionel</strong></a></li>
                         </ul>
                     </div>
-                    <a href="#" class="btn btn-outline-primary">Connexion</a>
+                    <a href="/groupy/Views/User/formco.php" class="btn btn-outline-primary">Connexion</a>
                 </div>
             </div>
         </div>
