@@ -1,8 +1,23 @@
 <?php 
-$title = "Accueil - Groupy"; 
-include '../../Layout/header.php'; 
+session_start();
 require '../../Controlleur/UserController.php';
+
+if (isset($_POST['submit'])) {
+  array_pop($_POST);
+  try {
+      register($_POST);
+      header("Location: formCo.php");
+      exit;
+  } catch (Exception $e) {
+      echo "Erreur d'inscription : " . $e->getMessage();
+      exit;
+  }
+}
+
+$title = "Inscription Client - Groupy"; 
+include '../../Layout/header.php'; 
 ?>
+
 <body class="bg-light">
 <div class="container mt-5">
   <div class="row justify-content-center">
@@ -64,22 +79,4 @@ require '../../Controlleur/UserController.php';
 </div>
 </body>
 
-
-
-<?php 
-include '../../Layout/footer.php'; 
-
-if (isset($_POST['submit'])) {
-  array_pop($_POST);
-  try {
-      register($_POST);
-      echo "Inscription réussie !";
-
-      header("Location: dashboard.php");
-      exit;
-  } catch (Exception $e) {
-      echo "Erreur d'inscription : " . $e->getMessage();
-      exit;
-  }
-}
-?>
+<?php include '../../Layout/footer.php'; ?>

@@ -1,9 +1,13 @@
 <?php
-
+session_start();
 require 'BddConnController.php';
 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+
 function register($data){
-    session_start();
     $pdo = connect_bd();
     if(!$pdo) {
         echo "Erreur de connexion à la base de données.";
@@ -11,13 +15,15 @@ function register($data){
     }
     else{
         // Vérifier si l'utilisateur existe déjà
-        $user = get_user($data['email'], $data['password']);
+        $user = get_user($data['email'], $data['motdepasse']);
         if($user){
             echo "L'utilisateur existe déjà.";
             return false;
         }
         else{
             if($data && count($data) > 7){
+                $motdepasse_non_hash = $data['motdepasse'];
+
                 $data['motdepasse'] = password_hash($data['motdepasse'], PASSWORD_BCRYPT);
                 $data_part1 = array_slice($data, 0, 6);
                 $data_part2 = array_slice($data, 6); 
@@ -36,7 +42,7 @@ function register($data){
                     return false;
                 }
                 else {
-                    $existUser = get_user($data['email'], $data['motdepasse']);
+                    $existUser = get_user($data['email'], $motdepasse_non_hash);
                     $_SESSION['connectedUser'] = $existUser;
                     deconect_db($pdo);
                     header("Location: ../formCo.php");
@@ -44,6 +50,8 @@ function register($data){
                 }
             }
             else {
+                $motdepasse_non_hash = $data['motdepasse'];
+
                 $data['motdepasse'] = password_hash($data['motdepasse'], PASSWORD_BCRYPT);
                 $req1 = "INSERT INTO utilisateur (nom, prenom, adresse, phone, email, motdepasse) VALUES (?, ?, ?, ?, ?, ?)";
                 $stmt1 = $pdo->prepare($req1);
@@ -58,7 +66,7 @@ function register($data){
                     return false;
                 }
                 else {
-                    $existUser = get_user($data['email'], $data['motdepasse']);
+                    $existUser = get_user($data['email'], $motdepasse_non_hash);
                     $_SESSION['connectedUser'] = $existUser;
                     deconect_db($pdo);
                     header("Location: ../formCo.php");
