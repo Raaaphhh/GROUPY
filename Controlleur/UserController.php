@@ -44,7 +44,7 @@ function register($data){
                     $existUser = get_user($data['email'], $motdepasse_non_hash);
                     $_SESSION['connectedUser'] = $existUser;
                     deconect_db($pdo);
-                    header("Location: formCo.php");
+                    header("Location: /groupy/index.php");
                     exit;
                 }
             }
@@ -68,10 +68,32 @@ function register($data){
                     $existUser = get_user($data['email'], $motdepasse_non_hash);
                     $_SESSION['connectedUser'] = $existUser;
                     deconect_db($pdo);
-                    header("Location: formCo.php");
+                    header("Location: /groupy/index.php");
                     exit;
                 }
             }
+        }
+    }
+}
+
+function login($data){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }
+    else{
+        $existUser = get_user($data['email'], $data['motdepasse']);
+        if($existUser){
+            $_SESSION['connectedUser'] = $existUser;
+            deconect_db($pdo);
+            header("Location: /groupy/index.php");
+            exit;
+        }
+        else{
+            echo "Utilisateur ou mot de passe incorrect.";
+            deconect_db($pdo);
+            return false;
         }
     }
 }
@@ -115,32 +137,46 @@ function get_user($email, $password){
     }
 }
 
-function login($data){
-    $pdo = connect_bd();
-    if(!$pdo) {
-        echo "Erreur de connexion à la base de données.";
-        return false;
-    }
-    else{
-        $existUser = get_user($data['email'], $data['motdepasse']);
-        if($existUser){
-            $_SESSION['connectedUser'] = $existUser;
-            deconect_db($pdo);
-            header("Location: dashboard.php");
-            exit;
-        }
-        else{
-            echo "Utilisateur ou mot de passe incorrect.";
-            deconect_db($pdo);
-            return false;
-        }
-    }
-}
+// A changer
+// function updateUser($data){
+//     $pdo = connect_bd();
+//     if(!$pdo) {
+//         echo "Erreur de connexion à la base de données.";
+//         return false;
+//     }
+//     else{
+//         $data['photo'] = uploadPic($_FILES['photo']);
+//         $data['id'] = $_SESSION['connectedUser']['id'];
+//         $req = "UPDATE user SET  nom = ?, prenom = ?, date_naissance = ?, email = ?, telephone = ?, password = ?, adresse = ?, photo = ? WHERE id = ?";
+//         $stmt = $pdo->prepare($req);
+//         $params = [
+//             $data['nom'],
+//             $data['prenom'],
+//             $data['date_naissance'],
+//             $data['email'],
+//             $data['telephone'],
+//             $data['password'],
+//             $data['adresse'],
+//             $data['photo'],
+//             $data['id']
+//         ];
+//         // var_dump($params);
+//         $result = $stmt->execute($params);
+        
+//         if (!$result) {
+//             echo "Erreur lors de la mise à jour de l'utilisateur.";
+//             return false;
+//         } else {
+//             $_SESSION['connectedUser'] = $data;
+//             deconect_db($pdo);
+//             echo "Modification réussie.";
+//         }
+//     }
+// }
 
 function logout(){
     session_unset();
     session_destroy();
-    header("Location: form_co.php");
 }
 
 ?> 
