@@ -138,41 +138,72 @@ function get_user($email, $password){
 }
 
 // A changer
-// function updateUser($data){
-//     $pdo = connect_bd();
-//     if(!$pdo) {
-//         echo "Erreur de connexion à la base de données.";
-//         return false;
-//     }
-//     else{
-//         $data['photo'] = uploadPic($_FILES['photo']);
-//         $data['id'] = $_SESSION['connectedUser']['id'];
-//         $req = "UPDATE user SET  nom = ?, prenom = ?, date_naissance = ?, email = ?, telephone = ?, password = ?, adresse = ?, photo = ? WHERE id = ?";
-//         $stmt = $pdo->prepare($req);
-//         $params = [
-//             $data['nom'],
-//             $data['prenom'],
-//             $data['date_naissance'],
-//             $data['email'],
-//             $data['telephone'],
-//             $data['password'],
-//             $data['adresse'],
-//             $data['photo'],
-//             $data['id']
-//         ];
-//         // var_dump($params);
-//         $result = $stmt->execute($params);
+// voir selon le role
+function updateUser($data){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }
+    else{
+        $data['id'] = $_SESSION['connectedUser']['id_user'];
+        $req = "UPDATE user SET  nom = ?, prenom = ?, date_naissance = ?, email = ?, telephone = ?, password = ?, adresse = ?, photo = ? WHERE id = ?";
+        $stmt = $pdo->prepare($req);
+        $params = [
+            $data['nom'],
+            $data['prenom'],
+            $data['date_naissance'],
+            $data['email'],
+            $data['telephone'],
+            $data['password'],
+            $data['adresse'],
+            $data['id']
+        ];
+        $result = $stmt->execute($params);
         
-//         if (!$result) {
-//             echo "Erreur lors de la mise à jour de l'utilisateur.";
-//             return false;
-//         } else {
-//             $_SESSION['connectedUser'] = $data;
-//             deconect_db($pdo);
-//             echo "Modification réussie.";
-//         }
-//     }
-// }
+        if (!$result) {
+            echo "Erreur lors de la mise à jour de l'utilisateur.";
+            return false;
+        } else {
+            $_SESSION['connectedUser'] = $data;
+            deconect_db($pdo);
+            echo "Modification réussie.";
+        }
+    }
+}
+
+function get_role($iduserConnected) {
+    $pdo = connect_bd();
+    if (!$pdo) {
+        return false;
+    }
+    try {
+        $idUser = $iduserConnected;
+        $stmt = $pdo->prepare("SELECT * FROM vendeur WHERE id_user = :id");
+        $stmt->execute(['id' => $idUser]);
+        $vendeur = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($vendeur) {
+            $_SESSION['vendeurInfo'] = $vendeur; 
+            deconect_db($pdo);
+            return "vendeur";
+        }
+
+        $stmt = $pdo->prepare("SELECT * FROM client WHERE id_user = :id");
+        $stmt->execute(['id' => $idUser]);
+        $client = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($client) {
+            deconect_db($pdo);
+            return "client";
+        }
+        deconect_db($pdo);
+        return false;
+
+    } catch (PDOException $e) {
+        echo "Erreur lors de la récupération du rôle : " . $e->getMessage();
+        deconect_db($pdo);
+        return false;
+    }
+}
 
 function logout(){
     session_unset();

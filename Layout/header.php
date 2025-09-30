@@ -1,5 +1,13 @@
 <?php
-session_start();
+require __DIR__ . '/../config.php';
+
+
+
+if (isset($_POST['submit_logout'])) {
+    logout();
+    header('Location: /groupy/index.php'); 
+    exit();
+}
 ?>
 <!doctype html>
 <html lang="fr">
@@ -33,17 +41,20 @@ session_start();
                 </ul>
 
                 <div class="ms-auto d-flex gap-2">
-                    <div class="dropdown">
-                        <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" 
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                            Inscription
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                            <li><a class="dropdown-item text-primary" href="/groupy/Views/User/formRegClient.php">Inscription <strong>client</strong></a></li>
-                            <li><a class="dropdown-item text-primary" href="/groupy/Views/User/formRegVendeur.php">Inscription <strong>professionel</strong></a></li>
-                        </ul>
-                    </div>
-                    <a href="/groupy/Views/User/formco.php" class="btn btn-outline-primary">Connexion</a>
+                    <?php if (!isset($_SESSION['connectedUser'])): ?>
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" 
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                Inscription
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <li><a class="dropdown-item text-primary" href="/groupy/Views/User/formRegClient.php">Inscription <strong>client</strong></a></li>
+                                <li><a class="dropdown-item text-primary" href="/groupy/Views/User/formRegVendeur.php">Inscription <strong>professionel</strong></a></li>
+                            </ul>
+                        </div>
+                        <a href="/groupy/Views/User/formco.php" class="btn btn-outline-primary">Connexion</a>
+                    <?php endif; ?>
+                    
 
                     <?php if (isset($_SESSION['connectedUser'])): ?>
                         <a href="/groupy/Views/User/profil.php" class="btn btn-outline-secondary">
@@ -55,6 +66,11 @@ session_start();
                                         1.332c-.678.678-.83 1.418-.832 1.664z"/>
                             </svg>
                         </a>
+                        <form action="#" method="post">
+                            <button class="btn btn-danger" type="submit" name="submit_logout">
+                                Déconnexion
+                            </button>
+                        </form>
                     <?php endif; ?>
                     
                 </div>

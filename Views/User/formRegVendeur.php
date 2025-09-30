@@ -1,6 +1,6 @@
 <?php 
 session_start();
-require '../../Controlleur/UserController.php';
+include '../../Layout/header.php'; 
 
 if (isset($_POST['submit'])) {
   array_pop($_POST);
@@ -14,7 +14,6 @@ if (isset($_POST['submit'])) {
 }
 
 $title = "Inscription Pro - Groupy"; 
-include '../../Layout/header.php'; 
 ?>
 
 <body class="bg-light">
