@@ -139,7 +139,7 @@ function get_user($email, $password){
 
 // A changer
 // voir selon le role
-function updateUser($data){
+function updateUser($data, $role){
     $pdo = connect_bd();
     if(!$pdo) {
         echo "Erreur de connexion à la base de données.";
@@ -147,28 +147,55 @@ function updateUser($data){
     }
     else{
         $data['id'] = $_SESSION['connectedUser']['id_user'];
-        $req = "UPDATE user SET  nom = ?, prenom = ?, date_naissance = ?, email = ?, telephone = ?, password = ?, adresse = ?, photo = ? WHERE id = ?";
-        $stmt = $pdo->prepare($req);
-        $params = [
-            $data['nom'],
-            $data['prenom'],
-            $data['date_naissance'],
-            $data['email'],
-            $data['telephone'],
-            $data['password'],
-            $data['adresse'],
-            $data['id']
+        $reqUser = "UPDATE utilisateur 
+            SET nom = ?, prenom = ?, adresse = ?, phone = ?, email = ? 
+            WHERE id_user = ?";
+        $stmtUser = $pdo->prepare($reqUser);
+        $paramsUser = [
+        $data['nom'],
+        $data['prenom'],
+        $data['adresse'],
+        $data['phone'],
+        $data['email'],
+        $data['id']
         ];
-        $result = $stmt->execute($params);
-        
-        if (!$result) {
-            echo "Erreur lors de la mise à jour de l'utilisateur.";
+        $resultUser = $stmtUser->execute($paramsUser);
+        if (!$resultUser) {
+            echo "Erreur lors de la mise à jour des informations du vendeur.";
             return false;
-        } else {
-            $_SESSION['connectedUser'] = $data;
-            deconect_db($pdo);
-            echo "Modification réussie.";
         }
+
+        if($role == "vendeur") {
+            $reqVendeur = "UPDATE vendeur 
+                SET nom_entreprise = ?, siret = ?, adresse_entreprise = ?, email_pro = ? 
+                WHERE id_user = ?";
+            $stmtVendeur = $pdo->prepare($reqVendeur);
+            $paramsVendeur = [
+                $data['nom_entreprise'],
+                $data['siret'],
+                $data['adresse_entreprise'],
+                $data['email_pro'],
+                $data['id']
+            ];
+            $resultVendeur = $stmtVendeur->execute($paramsVendeur);
+            if(!$resultVendeur){
+                echo "Erreur lors de la mise à jour des informations vendeur.";
+                return false;
+            }
+            $_SESSION['vendeurInfo']['nom_entreprise']     = $data['nom_entreprise'];
+            $_SESSION['vendeurInfo']['siret']              = $data['siret'];
+            $_SESSION['vendeurInfo']['adresse_entreprise'] = $data['adresse_entreprise'];
+            $_SESSION['vendeurInfo']['email_pro']          = $data['email_pro'];
+            
+        }
+        $_SESSION['connectedUser']['nom']     = $data['nom'];
+        $_SESSION['connectedUser']['prenom']  = $data['prenom'];
+        $_SESSION['connectedUser']['adresse'] = $data['adresse'];
+        $_SESSION['connectedUser']['phone']   = $data['phone'];
+        $_SESSION['connectedUser']['email']   = $data['email'];
+        deconect_db($pdo);
+        echo "Modification réussie.";
+        return true;
     }
 }
 

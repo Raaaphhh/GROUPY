@@ -1,14 +1,14 @@
 <?php
 require __DIR__ . '/../config.php';
 
-
-
 if (isset($_POST['submit_logout'])) {
     logout();
     header('Location: /groupy/index.php'); 
     exit();
 }
 ?>
+
+
 <!doctype html>
 <html lang="fr">
 <head>

@@ -2,7 +2,6 @@
 session_start();
 include '../../Layout/header.php'; 
 
-
 if (isset($_POST['submit'])) {
   array_pop($_POST);
   try {
@@ -67,7 +66,6 @@ $title = "Inscription Client - Groupy";
             <div class="d-grid">
               <button type="submit" class="btn btn-primary" name="submit">S'inscrire</button>
             </div>
-
           </form>
 
         </div>

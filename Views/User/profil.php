@@ -1,5 +1,8 @@
 <?php 
-session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 include '../../Layout/header.php'; 
 
 if (!isset($_SESSION['connectedUser'])) {
@@ -13,20 +16,20 @@ if (isset($_POST['submit_logout'])) {
     exit();
 }
 
+$role = get_role($_SESSION['connectedUser']['id_user']);
+
+
 if (isset($_POST['submit_update'])) {
-    if (updateUser($_POST)) {
-        $_SESSION['connectedUser'] = array_merge($_SESSION['connectedUser'], $_POST);
-        header("Location: profile.php?success=1");
+    if (updateUser($_POST, $role)) {
+        header("Location: profil.php");
         exit();
     } else {
-        $error = "Erreur lors de la mise à jour.";
+        echo "Erreur lors de la mise à jour.";
     }
 }
 
-$role = get_role($_SESSION['connectedUser']['id_user']);
 
 $title = "Inscription Pro - Groupy"; 
-// include '../../Layout/header.php'; 
 ?>
 
 <body class="bg-light text-center">
@@ -81,7 +84,7 @@ $title = "Inscription Pro - Groupy";
                 <h5 class="modal-title" id="editModalLabel">Modifier mes informations</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
-            <form action="profile.php" method="post">
+            <form action="#" method="post">
                 <div class="modal-body text-start">
                 <input type="hidden" name="id_user" value="<?= $_SESSION['connectedUser']['id_user'] ?>">
 
