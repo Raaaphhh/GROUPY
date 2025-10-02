@@ -16,9 +16,6 @@ if (isset($_POST['submit_logout'])) {
     exit();
 }
 
-$role = get_role($_SESSION['connectedUser']['id_user']);
-
-
 if (isset($_POST['submit_update'])) {
     if (updateUser($_POST, $role)) {
         header("Location: profil.php");
@@ -27,14 +24,12 @@ if (isset($_POST['submit_update'])) {
         echo "Erreur lors de la mise à jour.";
     }
 }
-
-
-$title = "Inscription Pro - Groupy"; 
+$title = "Profil - Groupy"; 
 ?>
 
 <body class="bg-light text-center">
 
-    <h1>Bienvenue <?php echo htmlspecialchars($_SESSION['connectedUser']['prenom']); ?></h1>
+    <h1>Votre profil : <?php echo htmlspecialchars($_SESSION['connectedUser']['prenom']); ?></h1>
 
     <div class="card shadow-lg border-0 rounded-4 mx-auto mt-5" style="max-width: 28rem;">
         <div class="card-header bg-primary text-white text-center rounded-top-4">
@@ -139,8 +134,6 @@ $title = "Inscription Pro - Groupy";
         </div>
     </div>
 
-
 </body>
-
 
 <?php require '../../Layout/footer.php'; ?>

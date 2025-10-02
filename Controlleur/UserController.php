@@ -178,8 +178,6 @@ function get_user($email, $password){
     }
 }
 
-// A changer
-// voir selon le role
 function updateUser($data, $role){
     $pdo = connect_bd();
     if(!$pdo) {
@@ -262,6 +260,11 @@ function get_role($iduserConnected) {
         if ($client) {
             deconect_db($pdo);
             return "client";
+        }
+
+        if (!$vendeur && !$client) {
+            deconect_db($pdo);
+            return "admin";
         }
         deconect_db($pdo);
         return false;

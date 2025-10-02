@@ -57,7 +57,7 @@ if (isset($_POST['submit_logout'])) {
                     
 
                     <?php if (isset($_SESSION['connectedUser'])): ?>
-                        <a href="/groupy/Views/User/profil.php" class="btn btn-outline-secondary">
+                        <a href="/groupy/Views/User/dashboard.php" class="btn btn-outline-secondary">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" 
                                 class="bi bi-person" viewBox="0 0 16 16">
                                 <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 
