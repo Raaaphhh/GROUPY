@@ -1,11 +1,18 @@
 <?php 
-session_start();
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 include '../../Layout/header.php'; 
 
 if (isset($_POST['submit'])) {
   array_pop($_POST);
   try {
-    register($_POST);
+    $result = register_Client($_POST);
+    if ($result === false) {
+        echo "Erreur : L'utilisateur existe déjà ou une erreur est survenue.";
+        exit;
+    }
     exit;
   } catch (Exception $e) {
     echo "Erreur d'inscription : " . $e->getMessage();

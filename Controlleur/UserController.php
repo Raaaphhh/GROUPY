@@ -6,71 +6,112 @@ require 'BddConnController.php';
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
 
-function register($data){
+
+function register_utilisateur($data){
     $pdo = connect_bd();
     if(!$pdo) {
         echo "Erreur de connexion à la base de données.";
         return false;
     }
     else{
-        // Vérifier si l'utilisateur existe déjà
         $user = get_user($data['email'], $data['motdepasse']);
         if($user){
             echo "L'utilisateur existe déjà.";
             return false;
         }
         else{
-            if($data && count($data) > 7){
-                $motdepasse_non_hash = $data['motdepasse'];
-
-                $data['motdepasse'] = password_hash($data['motdepasse'], PASSWORD_BCRYPT);
-                $data_part1 = array_slice($data, 0, 6);
-                $data_part2 = array_slice($data, 6); 
-
-                $req1 = "INSERT INTO utilisateur (nom, prenom, adresse, phone, email, motdepasse) VALUES (?, ?, ?, ?, ?, ?)";
-                $stmt1 = $pdo->prepare($req1);
-                $result1 = $stmt1->execute(array_values($data_part1));
-
-                $idVenduer = $pdo->lastInsertId();
-                $req2 = "INSERT INTO vendeur (id_user, nom_entreprise, siret, adresse_entreprise, email_pro) VALUES (?, ?, ?, ?, ?)";
-                $fusion_data_id = array_merge([$idVenduer], array_values($data_part2));
-                $stmt2 = $pdo->prepare($req2);
-                $result2 = $stmt2->execute($fusion_data_id);
-                if (!$result1 || !$result2) {
-                    echo "Erreur lors de l'insertion de l'utilisateur.";
-                    return false;
-                }
-                else {
-                    $existUser = get_user($data['email'], $motdepasse_non_hash);
-                    $_SESSION['connectedUser'] = $existUser;
-                    deconect_db($pdo);
-                    header("Location: /groupy/index.php");
-                    exit;
-                }
+            $motdepasse_non_hash = $data['motdepasse'];
+            $data['motdepasse'] = password_hash($data['motdepasse'], PASSWORD_BCRYPT);
+            $req = "INSERT INTO utilisateur (nom, prenom, adresse, phone, email, motdepasse) VALUES (?, ?, ?, ?, ?, ?)";
+            $stmt = $pdo->prepare($req);
+            $params = [
+                $data['nom'],
+                $data['prenom'],
+                $data['adresse'],
+                $data['phone'],
+                $data['email'],
+                $data['motdepasse']
+            ];
+            $result = $stmt->execute($params);
+            if (!$result) {
+                echo "Erreur lors de l'insertion de l'utilisateur.";
+                return false;
             }
             else {
-                $motdepasse_non_hash = $data['motdepasse'];
+                $existUser = get_user($data['email'], $motdepasse_non_hash);
+                $_SESSION['connectedUser'] = $existUser;
+                deconect_db($pdo);
+                return true;
+            }
+        }
+    }
+}
 
-                $data['motdepasse'] = password_hash($data['motdepasse'], PASSWORD_BCRYPT);
-                $req1 = "INSERT INTO utilisateur (nom, prenom, adresse, phone, email, motdepasse) VALUES (?, ?, ?, ?, ?, ?)";
-                $stmt1 = $pdo->prepare($req1);
-                $result1 = $stmt1->execute(array_values($data));
-                
-                $idClient = $pdo->lastInsertId();
-                $req2 = "INSERT INTO client (id_user) VALUES ($idClient)";
-                $stmt2 = $pdo->prepare($req2);
-                $result2 = $stmt2->execute();
-                if (!$result1 || !$result2) {
-                    echo "Erreur lors de l'insertion de l'utilisateur.";
-                    return false;
-                }
-                else {
-                    $existUser = get_user($data['email'], $motdepasse_non_hash);
-                    $_SESSION['connectedUser'] = $existUser;
-                    deconect_db($pdo);
-                    header("Location: /groupy/index.php");
-                    exit;
-                }
+function register_Vendeur($data){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }
+    else{
+        echo "test";
+        $insc_user = register_utilisateur($data);
+        echo "test";
+        $idVendeur = $_SESSION['connectedUser']['id_user'];
+        if ($insc_user === false) {
+            return false;
+        }
+        else{
+            $req = "INSERT INTO vendeur (id_user, nom_entreprise, siret, adresse_entreprise, email_pro) VALUES (?, ?, ?, ?, ?)";
+            $stmt = $pdo->prepare($req);
+            $params = [$idVendeur, $data['nom_entreprise'], $data['siret'], $data['adresse_entreprise'], $data['email_pro']];
+            $result = $stmt->execute($params);
+            if (!$result) {
+                echo "Erreur lors de l'insertion du vendeur.";
+                return false;
+            }
+            else {
+                $_SESSION['vendeurInfo'] = [
+                    'id_user' => $idVendeur,
+                    'nom_entreprise' => $data['nom_entreprise'],
+                    'siret' => $data['siret'],
+                    'adresse_entreprise' => $data['adresse_entreprise'],
+                    'email_pro' => $data['email_pro']
+                ];
+                deconect_db($pdo);
+                header("Location: /groupy/index.php");
+                exit;
+            }
+        }
+    }
+}
+
+function register_Client($data){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }
+    else{
+        $insc_user = register_utilisateur($data);
+        $idClient = $_SESSION['connectedUser']['id_user'];
+        if ($insc_user === false) {
+            return false; 
+        }
+        else{
+            $req = "INSERT INTO client (id_user) VALUES (?)";
+            $stmt = $pdo->prepare($req);
+            $params = [$idClient];
+            $result = $stmt->execute($params);
+            echo "test";
+            if (!$result) {
+                echo "Erreur lors de l'insertion du client.";
+                return false;
+            }
+            else {
+                deconect_db($pdo);
+                header("Location: /groupy/index.php");
+                exit;
             }
         }
     }
