@@ -127,6 +127,7 @@ function login($data){
         $existUser = get_user($data['email'], $data['motdepasse']);
         if($existUser){
             $_SESSION['connectedUser'] = $existUser;
+            check_motdepasse_change();
             deconect_db($pdo);
             header("Location: /groupy/index.php");
             exit;
@@ -262,7 +263,15 @@ function get_role($iduserConnected) {
             return "client";
         }
 
-        if (!$vendeur && !$client) {
+        $stmt = $pdo->prepare("SELECT * FROM gestionnaire WHERE id_user = :id");
+        $stmt->execute(['id' => $idUser]);
+        $gestionnaire = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($gestionnaire) {
+            deconect_db($pdo);
+            return "gestionnaire";
+        }
+
+        if (!$vendeur && !$client && !$gestionnaire) {
             deconect_db($pdo);
             return "admin";
         }
@@ -274,6 +283,48 @@ function get_role($iduserConnected) {
         deconect_db($pdo);
         return false;
     }
+}
+
+function check_motdepasse_change() {
+    if (isset($_SESSION['connectedUser'])) {
+        $motdepasse_change = $_SESSION['connectedUser']['motdepasse_change'];
+        if ($motdepasse_change === null) {
+            return;
+        } elseif ($motdepasse_change == 0) {
+            header("Location: /groupy/Views/User/changePassword.php");
+            exit;
+        }
+    }
+}
+
+function changePassword($data){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }
+    if ($data['new_password'] !== $data['confirm_password']) {
+        echo "Les mots de passe ne correspondent pas.";
+        return false;
+    }
+    $idUser = $_SESSION['connectedUser']['id_user'];
+    $role = get_role($idUser);
+    $hashedPassword = password_hash($data['new_password'], PASSWORD_BCRYPT);
+    $req = "UPDATE utilisateur SET motdepasse = ?, motdepasse_change = 1 WHERE id_user = ?";
+    $stmt   = $pdo->prepare($req);
+    $result = $stmt->execute([$hashedPassword, $idUser]);
+    if (!$result) {
+        echo "Erreur lors de la mise à jour du mot de passe.";
+        return false;
+    }
+    if ($role === "gestionnaire") {
+        $req2   = "UPDATE gestionnaire SET est_actif = 1 WHERE id_user = ?";
+        $stmt2  = $pdo->prepare($req2);
+        $result = $stmt2->execute([$idUser]);
+    }
+    $_SESSION['connectedUser']['motdepasse_change'] = 1;
+    deconect_db($pdo);
+    return true;
 }
 
 function logout(){

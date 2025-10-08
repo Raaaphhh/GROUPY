@@ -16,6 +16,8 @@ if (isset($_POST['submit_logout'])) {
     exit();
 }
 
+$role = get_role($_SESSION['connectedUser']['id_user']);
+
 if (isset($_POST['submit_update'])) {
     if (updateUser($_POST, $role)) {
         header("Location: profil.php");
