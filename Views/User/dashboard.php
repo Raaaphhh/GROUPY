@@ -31,7 +31,7 @@ $title = "Dashboard - Groupy";
             <div class="card">
                 <div class="card-body text-center">
                     <h5 class="card-title">Gestion de produits</h5>
-                    <a href="/groupy/Views/Vendeur/.php" class="btn btn-success">Voir</a>
+                    <a href="/groupy/Views/Vendeur/actProdVend.php" class="btn btn-success">Voir</a>
                 </div>
             </div>
         </div>    
@@ -42,7 +42,7 @@ $title = "Dashboard - Groupy";
             <div class="card">
                 <div class="card-body text-center">
                     <h5 class="card-title">Gestion de produits</h5>
-                    <a href="/groupy/Views/Gestionnaire/.php" class="btn btn-success">Voir</a>
+                    <a href="/groupy/Views/Gestionnaire/actProdGest.php" class="btn btn-success">Voir</a>
                 </div>
             </div>
         </div>    
