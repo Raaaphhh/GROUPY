@@ -61,7 +61,6 @@ function get_prevente(){
         }
     }
 }
-get_prevente();
 
 function get_categories(){
     $pdo = connect_bd();
@@ -84,12 +83,16 @@ function get_categories(){
     }
 }
 
-function get_cate_used(){
-    $req = "SELECT id_categorie, lib, FROM categorie
-            INNER JOIN produit ON categorie.id_categorie = produit.id_categorie_
-            WHERE produit.id_vendeur = ?";
-}
+// function get_cate_used(){
+//     $req = "SELECT id_categorie, lib, FROM categorie
+//             INNER JOIN produit ON categorie.id_categorie = produit.id_categorie_
+//             WHERE produit.id_vendeur = ?";
+// }
 
+
+
+
+// ============= ADD =============
 function add_categorie($data){
     $pdo = connect_bd();
     if(!$pdo) {
@@ -155,7 +158,7 @@ function add_produit($data){
 }
 
 function published_produit($data){
-    var_dump($data);
+    // var_dump($data);
     $pdo = connect_bd();
     if(!$pdo) {
         echo "Erreur de connexion à la base de données.";
@@ -187,5 +190,103 @@ function published_produit($data){
         }
     }
 }
+// ==================================
+
+
+
+
+// ============= DELETE =============
+function del_produit($idProduit){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }else{
+        try{
+            $idProd = $idProduit['id_produit'];
+            $req = "DELETE FROM produit WHERE id_produit = ?";
+            $stmt = $pdo->prepare($req);
+            $params = [$idProd];
+            $result = $stmt->execute($params);
+            if (!$result) {
+                echo "Erreur lors de l'exécution de la requête.";
+                return false;
+            }else{
+                deconect_db($pdo);
+                return true; 
+            }
+        }
+        catch (PDOException $e) {
+            echo "Erreur lors de la suppression du produit : " . $e->getMessage();
+            return false;
+        }
+    }
+}
+
+function del_categorie($idCategorie){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }else{
+        try{
+            $idCate = $idProduit['id_categorie'];
+            $req = "DELETE FROM categorie WHERE id_categorie = ?";
+            $stmt = $pdo->prepare($req);
+            $params = [$idCate];
+            $result = $stmt->execute($params);
+            if (!$result) {
+                echo "Erreur lors de l'exécution de la requête.";
+                return false;
+            }else{
+                deconect_db($pdo);
+                return true; 
+            }
+        }
+        catch (PDOException $e) {
+            echo "Erreur lors de la suppression du produit : " . $e->getMessage();
+            return false;
+        }
+    }
+}
+// ==================================
+
+
+
+
+// ============= UPDATE =============
+function update_categorie($data){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }else{
+        try{
+            $req = "UPDATE categorie SET lib = ? WHERE id_categorie = ?";
+            $stmt = $pdo->prepare($req);
+            $params = [
+                $data['nom'],
+                $data['id_categorie']
+            ];
+            $result = $stmt->execute($params);
+            if (!$result) {
+                echo "Erreur lors de l'exécution de la requête.";
+                return false;
+            }else{
+                deconect_db($pdo);
+                return true; 
+            }
+        }
+        catch (PDOException $e) {
+            echo "Erreur lors de la modification de la catégorie : " . $e->getMessage();
+            return false;
+        }
+    }
+}
+
+// function update_produit($data){
+
+// }
+// ==================================
 
 ?>

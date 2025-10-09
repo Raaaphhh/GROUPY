@@ -192,12 +192,12 @@ function updateUser($data, $role){
             WHERE id_user = ?";
         $stmtUser = $pdo->prepare($reqUser);
         $paramsUser = [
-        $data['nom'],
-        $data['prenom'],
-        $data['adresse'],
-        $data['phone'],
-        $data['email'],
-        $data['id']
+            $data['nom'],
+            $data['prenom'],
+            $data['adresse'],
+            $data['phone'],
+            $data['email'],
+            $data['id']
         ];
         $resultUser = $stmtUser->execute($paramsUser);
         if (!$resultUser) {
@@ -226,7 +226,6 @@ function updateUser($data, $role){
             $_SESSION['vendeurInfo']['siret']              = $data['siret'];
             $_SESSION['vendeurInfo']['adresse_entreprise'] = $data['adresse_entreprise'];
             $_SESSION['vendeurInfo']['email_pro']          = $data['email_pro'];
-            
         }
         $_SESSION['connectedUser']['nom']     = $data['nom'];
         $_SESSION['connectedUser']['prenom']  = $data['prenom'];

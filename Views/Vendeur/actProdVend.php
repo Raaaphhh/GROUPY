@@ -15,7 +15,7 @@ $preventes = get_prevente();
 if(isset($_POST['add_produit'])){
     array_pop($_POST);
     if(add_produit($_POST)){
-        header('Location: /groupy/Views/Produit/dashboardProduit.php');
+        header('Location: /groupy/Views/Vendeur/actProdvend.php');
         exit();
     }else{
         echo "ajout prod erreur";
@@ -24,10 +24,19 @@ if(isset($_POST['add_produit'])){
 if(isset($_POST['published'])){
     array_pop($_POST);
     if(published_produit($_POST)){
-        header('Location: /groupy/Views/Produit/dashboardProduit.php');
+        header('Location: /groupy/Views/Vendeur/actProdvend.php');
         exit();
     }else{
         echo "publihed error";
+    }
+}
+if(isset($_POST['supprimer'])){
+    array_pop($_POST);
+    if(del_produit($_POST)){
+        header('Location: /groupy/Views/Vendeur/actProdvend.php');
+        exit();
+    }else{
+        echo "del prod error";
     }
 }
 
@@ -55,24 +64,35 @@ $title = "Action - Produit - Vendeur - Groupy";
             </tr>
         </thead>
         <tbody>
-            <?php
-                foreach ($produits as $produit) {
-                    echo "<tr>";
-                    echo "<form method='post' action='/groupy/Views/Produit/handleProduit.php'>";
-                    echo "<td>" . htmlspecialchars($produit['id_produit']) . "</td>";
-                    echo "<td>" . htmlspecialchars($produit['nom']) . "</td>";
-                    echo "<td>" . htmlspecialchars($produit['categorie']) . "</td>";
-                    echo "<td>" . htmlspecialchars($produit['description']) . "</td>";
-                    echo "<td>" . htmlspecialchars($produit['prix']) . " €</td>";
-                    echo "<td><img src='" . htmlspecialchars($produit['image']) . "' alt='Image' width='50'></td>";
-                    echo "<td>
-                            <button type='submit' class='btn btn-warning btn-sm' name='submit_edit'>Modifier</button>
-                            <button type='submit' class='btn btn-danger btn-sm' name='submit_del'>Supprimer</button>
-                          </td>";
-                    echo "</form>";
-                    echo "</tr>";
-                }
-            ?>
+            <?php foreach ($produits as $produit) : ?>
+                <tr>
+                    <td><?= htmlspecialchars($produit['id_produit'])?></td>
+                    <td><?= htmlspecialchars($produit['nom']) ?></td>
+                    <td><?= htmlspecialchars($produit['categorie']) ?></td>
+                    <td><?= htmlspecialchars($produit['description']) ?></td>
+                    <td><?= htmlspecialchars($produit['prix']) ?> €</td>
+                    <td><img src="<?= htmlspecialchars($produit['image']) ?>" alt="Image" width="50"></td>
+                    <td>
+                        <button 
+                            type="button" 
+                            class="btn btn-warning btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#updateProdModal"
+                            data-id="<?= htmlspecialchars($produit['id_produit']) ?>">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+
+                        <button 
+                            type="button" 
+                            class="btn btn-danger btn-sm"
+                            data-bs-toggle="modal"
+                            data-bs-target="#deleteModal"
+                            data-id="<?= htmlspecialchars($produit['id_produit']) ?>">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
         </tbody>
     </table>
     <?php else: ?>
@@ -106,7 +126,7 @@ $title = "Action - Produit - Vendeur - Groupy";
                     echo "<td>" . htmlspecialchars($prevente['prix_prevente']) . "€</td>";
                     echo "<td>
                             <button type='submit' class='btn btn-warning btn-sm' name='submit_edit'>Modifier</button>
-                            <button type='submit' class='btn btn-danger btn-sm' name='submit_del'>Supprimer</button>
+                            <button type='submit' class='btn btn-danger btn-sm' name='submit_del'>retirer</button>
                           </td>";
                     echo "</form>";
                     echo "</tr>";
@@ -224,4 +244,87 @@ $title = "Action - Produit - Vendeur - Groupy";
     </div>
 </div>
 
+<!-- modal validation supression -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirmer la suppression</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        Êtes-vous sûr de vouloir supprimer ce produit ?
+      </div>
+      <div class="modal-footer">
+        <form method="post" action="#">
+          <input type="hidden" name="id_produit" id="idProduitASupprimer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+          <button type="submit" name="supprimer" class="btn btn-danger">Supprimer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal modificiation -->
+<div class="modal fade" id="updateProdModal" tabindex="-1" aria-labelledby="updateProdModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateProdModalLabel">Modification produit</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+        <form method="post" action="#">
+            <div class="modal-body text-start">
+                <input type="hidden" name="id_produit" id="idProduitAModifier">
+                <div class="mb-3">
+                    <label class="form-label">Nom</label>
+                    <input type="text" name="nom" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Nom</label>
+                    <input type="text" name="nom" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Nom</label>
+                    <input type="text" name="nom" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Nom</label>
+                    <input type="text" name="nom" class="form-control">
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                <button type="submit" name="modifier" class="btn btn-warning">Modifier</button>
+            </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+
 <?php require '../../Layout/footer.php'; ?>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const deleteModal = document.getElementById('deleteModal');
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; 
+        const idProduit = button.getAttribute('data-id'); 
+        const inputHidden = deleteModal.querySelector('#idProduitASupprimer');
+        inputHidden.value = idProduit;
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const updateProdModal = document.getElementById('updateProdModal');
+    updateProdModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget; 
+        const idProduit = button.getAttribute('data-id'); 
+        const inputHidden = updateProdModal.querySelector('#idProduitAModifier');
+        inputHidden.value = idProduit;
+    });
+}); 
+</script>

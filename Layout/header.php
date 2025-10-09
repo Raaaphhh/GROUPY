@@ -19,6 +19,7 @@ if (isset($_POST['submit_logout'])) {
           rel="stylesheet" 
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" 
           crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" 
             integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" 
             crossorigin="anonymous"></script>
@@ -34,11 +35,11 @@ if (isset($_POST['submit_logout'])) {
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
+                <!-- <ul class="navbar-nav">
                     <li class="nav-item"><a class="nav-link active" href="index.php">Home</a></li>
                     <li class="nav-item"><a class="nav-link" href="features.php">Features</a></li>
                     <li class="nav-item"><a class="nav-link" href="pricing.php">Pricing</a></li>
-                </ul>
+                </ul> -->
 
                 <div class="ms-auto d-flex gap-2">
                     <?php if (!isset($_SESSION['connectedUser'])): ?>
@@ -58,17 +59,11 @@ if (isset($_POST['submit_logout'])) {
 
                     <?php if (isset($_SESSION['connectedUser'])): ?>
                         <a href="/groupy/Views/User/dashboard.php" class="btn btn-outline-secondary">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" 
-                                class="bi bi-person" viewBox="0 0 16 16">
-                                <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 
-                                        8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-
-                                        .832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 
-                                        1.332c-.678.678-.83 1.418-.832 1.664z"/>
-                            </svg>
+                            <i class="bi bi-person-circle"></i>
                         </a>
                         <form action="#" method="post">
                             <button class="btn btn-danger" type="submit" name="submit_logout">
-                                Déconnexion
+                                <i class="bi bi-box-arrow-right"></i> 
                             </button>
                         </form>
                     <?php endif; ?>
