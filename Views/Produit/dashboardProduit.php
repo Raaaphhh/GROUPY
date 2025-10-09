@@ -15,6 +15,12 @@ $produits = get_produits($idUser);
 $categories = get_categories();
 $preventes = get_prevente();
 
+// TODO: 
+// faire une fonction de verification si la catégorie est utilisé par un produit
+
+// faire une fonction pour verifier si la catégorie est utilisé par une prevente :
+        // dans ce cas on grise la modification et supression du produit 
+
 if(isset($_POST['add_categorie'])){
     array_pop($_POST);
     if(add_categorie($_POST)){
@@ -58,6 +64,7 @@ $title = "Dashboard - Produit - Groupy";
     <?php endif; ?>
 
 
+    <!-- liste des produits -->
     <h3 class="mt-3">Liste des produits :</h3>
     <?php if ($produits) : ?>
     <table class="table table-bordered table-striped">
@@ -98,29 +105,29 @@ $title = "Dashboard - Produit - Groupy";
     <?php endif; ?>
 
     <br><br>
-
-    <h3>Liste des produits publiées en ligne :</h3>
-    <?php if ($preventes) : ?>
+    
+    <!-- liste des preventes -->
+    <?php if ($preventes && $role == "vendeur") :?>
+    <h3 class="mt-3">Liste des préventes :</h3>
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Produit</th>
+                <th>Nom</th>
                 <th>Date limite</th>
                 <th>Nombre minimum</th>
-                <th>staut</th>
-                <th>Prix prevente</th>
-                <th>Actions</th>
+                <th>statut</th>
+                <th>Prix</th>
             </tr>
         </thead>
         <tbody>
             <?php
                 foreach ($preventes as $prevente) {
                     echo "<tr>";
-                    echo "<form method='post' action='/groupy/Views/Produit/handleProduit.php'>";
+                    echo "<form method='post' action=''>";
                     echo "<td>" . htmlspecialchars($prevente['nom']) . "</td>";
                     echo "<td>" . htmlspecialchars($prevente['date_limite']) . "</td>";
                     echo "<td>" . htmlspecialchars($prevente['nombre_min']) . "</td>";
-                    echo "<td>" . htmlspecialchars($prevente['statut']) . " </td>";
+                    echo "<td>" . htmlspecialchars($prevente['statut']) . "</td>";
                     echo "<td>" . htmlspecialchars($prevente['prix_prevente']) . "€</td>";
                     echo "<td>
                             <button type='submit' class='btn btn-warning btn-sm' name='submit_edit'>Modifier</button>
@@ -132,11 +139,45 @@ $title = "Dashboard - Produit - Groupy";
             ?>
         </tbody>
     </table>
-    <?php else: ?>
-        <p>Aucun produit publié pour le moment.</p>
+    <?php elseif($role == "vendeur"): ?>
+        <p>Aucun produit ajouté pour le moment.</p>
     <?php endif; ?>
 
+    <br><br>
+
+    <!-- liste des catégories -->
+    <?php if ($categories && $role == "gestionnaire") : ?>
+    <h3>Liste des catégories :</h3>
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Nom</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php
+                foreach ($categories as $categorie) {
+                    echo "<tr>";
+                    echo "<form method='post' action='/groupy/Views/Produit/handleProduit.php'>";
+                    echo "<td>" . htmlspecialchars($categorie['lib']) . "</td>";
+                    echo "<td>
+                            <button type='submit' class='btn btn-warning btn-sm' name='submit_edit'>Modifier</button>
+                            <button type='submit' class='btn btn-danger btn-sm' name='submit_del'>Supprimer</button>
+                          </td>";
+                    echo "</form>";
+                    echo "</tr>";
+                }
+            ?>
+        </tbody>
+    </table>
+    <?php elseif ($role == "gestionnaire"): ?>
+        <p>Aucune produit publié pour le moment.</p>
+    <?php endif; ?>
+
+
+
 </body>
+
 
 <!-- modal ajout de produit -->
 <div class="modal fade" id="addProduitModal" tabindex="-1" aria-labelledby="addProduitModalLabel" aria-hidden="true">

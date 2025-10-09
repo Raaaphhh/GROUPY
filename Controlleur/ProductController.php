@@ -84,6 +84,12 @@ function get_categories(){
     }
 }
 
+function get_cate_used(){
+    $req = "SELECT id_categorie, lib, FROM categorie
+            INNER JOIN produit ON categorie.id_categorie = produit.id_categorie_
+            WHERE produit.id_vendeur = ?";
+}
+
 function add_categorie($data){
     $pdo = connect_bd();
     if(!$pdo) {
