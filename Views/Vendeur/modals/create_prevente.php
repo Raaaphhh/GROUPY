@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 shadow-lg">
         <div class="modal-header bg-success text-dark">
-            <h5 class="modal-title" id="addProduitModalLabel">Publier un produit</h5>
+            <h5 class="modal-title" id="addProduitModalLabel">Creer une prévente</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
         </div>
         <form action="#" method="post">

@@ -48,6 +48,33 @@ if(isset($_POST['create_prevente'])){
         echo "publihed error";
     }
 }
+if(isset($_POST['published_prevente'])){
+    unset($_POST['published_prevente']); 
+    if(published_prevente($_POST)){
+        header('Location: /groupy/Views/Vendeur/actProdvend.php');
+        exit();
+    }else{
+        echo "publihed error";
+    }
+}
+if(isset($_POST['update_prevente'])){
+    unset($_POST['update_prevente']); 
+    if(update_prevente($_POST)){
+        header('Location: /groupy/Views/Vendeur/actProdvend.php');
+        exit();
+    }else{
+        echo "del prevene error";
+    }
+}
+if(isset($_POST['supprimer_prevente'])){
+    unset($_POST['supprimer_prevente']); 
+    if(del_prevente($_POST)){
+        header('Location: /groupy/Views/Vendeur/actProdvend.php');
+        exit();
+    }else{
+        echo "del prevene error";
+    }
+}
 
 $idUser = $_SESSION['connectedUser']['id_user'];
 $produits = get_produits($idUser);
@@ -58,15 +85,21 @@ require 'modals/add_produit.php';
 require 'modals/del_produit.php';
 require 'modals/update_produit.php';
 require 'modals/create_prevente.php';
+require 'modals/published_prevente.php'; 
+require 'modals/update_prevente.php';
+require 'modals/del_prevente.php';
 
 $title = "Action - Produit - Vendeur - Groupy"; 
 ?>
 
 <body class="bg-light text-center">
     <h1 class="mb-4">Gestion Produits</h1>
-    <button class="btn btn-success mb-3 me-3" data-bs-toggle="modal" data-bs-target="#addProduitModal">Ajouter un produit</button>
-    <!-- <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#pulbishedProduitModal">Publier une prevente</button> -->
-    <button class="btn btn-success mb-3 ms-3" data-bs-toggle="modal" data-bs-target="#pulbishedProduitModal">Creer une prévente</button>
+    <button class="btn btn-success mb-3 me-3" data-bs-toggle="modal" data-bs-target="#addProduitModal">
+        <i class="bi bi-plus-square"></i> Produit
+    </button>
+    <button class="btn btn-success mb-3 ms-3" data-bs-toggle="modal" data-bs-target="#pulbishedProduitModal">
+        <i class="bi bi-plus-square"></i> Prévente
+    </button>
 
     <!-- liste des produits -->
     <h3 class="mt-3">Liste des produits :</h3>
@@ -159,12 +192,11 @@ $title = "Action - Produit - Vendeur - Groupy";
                             type="button" 
                             class="btn btn-warning btn-sm"
                             data-bs-toggle="modal"
-                            data-bs-target="#"
+                            data-bs-target="#updatePreventeModal"
                             data-id="<?= htmlspecialchars($prevente['id_prevente']) ?>"
                             data-prix_prevente="<?= htmlspecialchars($prevente['prix_prevente']) ?>"
                             data-date_limite="<?= htmlspecialchars($prevente['date_limite']) ?>"
-                            data-nombre_min="<?= htmlspecialchars($prevente['nombre_min']) ?>"
-                            data-statut="<?= htmlspecialchars($prevente['statut']) ?>">
+                            data-nombre_min="<?= htmlspecialchars($prevente['nombre_min']) ?>">
                             <i class="bi bi-pencil"></i>
                         </button>
 
@@ -172,7 +204,7 @@ $title = "Action - Produit - Vendeur - Groupy";
                             type="button" 
                             class="btn btn-primary btn-sm"
                             data-bs-toggle="modal"
-                            data-bs-target="#"
+                            data-bs-target="#publishedModal"
                             data-id="<?= htmlspecialchars($prevente['id_prevente']) ?>">
                             <i class="bi bi-cloud-upload"></i>
                         </button>
@@ -181,7 +213,7 @@ $title = "Action - Produit - Vendeur - Groupy";
                             type="button" 
                             class="btn btn-danger btn-sm"
                             data-bs-toggle="modal"
-                            data-bs-target="#"
+                            data-bs-target="#deletePreventeModal"
                             data-id="<?= htmlspecialchars($prevente['id_prevente']) ?>">
                             <i class="bi bi-trash"></i>
                         </button>
@@ -191,8 +223,6 @@ $title = "Action - Produit - Vendeur - Groupy";
             <?php endforeach; ?>
         </tbody>
     </table>
-    <?php elseif($role == "vendeur"): ?>
-        <p>Aucun produit ajouté pour le moment.</p>
     <?php endif; ?>
         
     <br><br>
@@ -227,28 +257,7 @@ $title = "Action - Produit - Vendeur - Groupy";
                     <td><?= htmlspecialchars($prevente['nombre_min'])?></td>
                     <td><?= htmlspecialchars($prevente['statut'])?></td>
                     <td>
-                        <button 
-                            type="button" 
-                            class="btn btn-warning btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#"
-                            data-id="<?= htmlspecialchars($prevente['id_prevente']) ?>"
-                            data-prix_prevente="<?= htmlspecialchars($prevente['prix_prevente']) ?>"
-                            data-date_limite="<?= htmlspecialchars($prevente['date_limite']) ?>"
-                            data-nombre_min="<?= htmlspecialchars($prevente['nombre_min']) ?>"
-                            data-statut="<?= htmlspecialchars($prevente['statut']) ?>">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-
-                        <button 
-                            type="button" 
-                            class="btn btn-primary btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#"
-                            data-id="<?= htmlspecialchars($prevente['id_prevente']) ?>">
-                            <i class="bi bi-cloud-upload"></i>
-                        </button>
-
+                        <!-- seulement si il y a aucun participant -->
                         <button 
                             type="button" 
                             class="btn btn-danger btn-sm"
@@ -263,8 +272,6 @@ $title = "Action - Produit - Vendeur - Groupy";
             <?php endforeach; ?>
         </tbody>
     </table>
-    <?php elseif($role == "vendeur"): ?>
-        <p>Aucun produit ajouté pour le moment.</p>
     <?php endif; ?>
 
 </body>

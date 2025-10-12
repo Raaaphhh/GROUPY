@@ -6,6 +6,7 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+
 function get_produits($idUserCo) {
     $pdo = connect_bd();
     if(!$pdo) {
@@ -55,7 +56,6 @@ function get_prevente(){
             $stmt = $pdo->prepare($req);
             $stmt->execute();
             $preventes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            var_dump($preventes);
             if($preventes){
                 deconect_db($pdo);
                 return $preventes;
@@ -88,12 +88,6 @@ function get_categories(){
         }
     }
 }
-
-// function get_cate_used(){
-//     $req = "SELECT id_categorie, lib, FROM categorie
-//             INNER JOIN produit ON categorie.id_categorie = produit.id_categorie_
-//             WHERE produit.id_vendeur = ?";
-// }
 
 
 
@@ -176,7 +170,7 @@ function create_prevente($data){
             $params = [
                 $data['date_limite'],
                 $data['nombre_minimum'],
-                "non plubié",
+                "non publié",
                 $data['prix_prevente'],
                 $data['id_produit']
             ];
@@ -203,7 +197,6 @@ function published_prevente($data){
         return false;
     }else{
         try{
-            // ajouter une verification de si le produit est deja en vente
             $req = "UPDATE prevente SET statut = ? WHERE id_prevente = ?";
             $stmt = $pdo->prepare($req);
             $params = [
@@ -284,6 +277,33 @@ function del_categorie($idCategorie){
         }
     }
 }
+
+function del_prevente($idPrevente){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }else{
+        try{
+            $idPrev = $idPrevente['id_prevente'];
+            $req = "DELETE FROM prevente WHERE id_prevente = ?";
+            $stmt = $pdo->prepare($req);
+            $params = [$idPrev];
+            $result = $stmt->execute($params);
+            if (!$result) {
+                echo "Erreur lors de l'exécution de la requête.";
+                return false;
+            }else{
+                deconect_db($pdo);
+                return true; 
+            }
+        }
+        catch (PDOException $e) {
+            echo "Erreur lors de la suppression du produit : " . $e->getMessage();
+            return false;
+        }
+    }
+}
 // ==================================
 
 
@@ -336,6 +356,39 @@ function update_produit($data){
                 $data['description'],
                 $data['prix'],
                 $data['id_produit']
+            ];
+            $result = $stmt->execute($params);
+            if (!$result) {
+                echo "Erreur lors de l'exécution de la requête.";
+                return false;
+            }else{
+                deconect_db($pdo);
+                return true; 
+            }
+        }
+        catch (PDOException $e) {
+            echo "Erreur lors de la modification du produit : " . $e->getMessage();
+            return false;
+        }
+    }
+}
+
+function update_prevente($data){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }else{
+        try{
+            $req = "UPDATE prevente 
+                    SET prix_prevente = ?, date_limite = ?, nombre_min = ?
+                    WHERE id_prevente = ?";
+            $stmt = $pdo->prepare($req);
+            $params = [
+                $data['prix_prevente'],
+                $data['date_limite'],
+                $data['nombre_min'],
+                $data['id_prevente']
             ];
             $result = $stmt->execute($params);
             if (!$result) {
