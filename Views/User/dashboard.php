@@ -41,7 +41,7 @@ $title = "Dashboard - Groupy";
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body text-center">
-                    <h5 class="card-title">Gestion de produits</h5>
+                    <h5 class="card-title">Gestion</h5>
                     <a href="/groupy/Views/Gestionnaire/actProdGest.php" class="btn btn-success">Voir</a>
                 </div>
             </div>

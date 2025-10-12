@@ -89,6 +89,31 @@ function get_categories(){
     }
 }
 
+function get_all_users(){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }else{
+        try{
+            $req = "SELECT u.id_user,u.nom,u.prenom, u.adresse,u.phone, u.email,
+                        COUNT(p.id_particiption) AS nombre_participations FROM utilisateur u
+                    INNER JOIN client c ON u.id_user = c.id_user
+                    LEFT JOIN participation p ON c.id_user = p.id_client
+                    GROUP BY u.id_user, u.nom, u.prenom, u.email
+                    ORDER BY nombre_participations DESC;";
+            $stmt = $pdo->prepare($req);
+            $stmt->execute();
+            $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            deconect_db($pdo);
+            return $users;
+        }
+        catch (PDOException $e) {
+            echo "Erreur lors de la récupération des utilisateurs : " . $e->getMessage();
+            return false;
+        }
+    }
+}
 
 
 

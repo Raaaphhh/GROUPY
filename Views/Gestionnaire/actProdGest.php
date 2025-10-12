@@ -7,14 +7,6 @@ if (!isset($_SESSION['connectedUser']) || $role !== "gestionnaire") {
     header('Location: /groupy/index.php'); 
     exit();
 }
-$idUser = $_SESSION['connectedUser']['id_user'];
-$categories = get_categories();
-
-// TODO: 
-// faire une fonction de verification si la catégorie est utilisé par un produit
-
-// faire une fonction pour verifier si la catégorie est utilisé par une prevente :
-        // dans ce cas on grise la modification et supression du produit 
 
 if(isset($_POST['add_categorie'])){
     array_pop($_POST);
@@ -25,7 +17,6 @@ if(isset($_POST['add_categorie'])){
         echo "ajout categorie erreur";
     }
 }
-
 if(isset($_POST['supprimer'])){
     unset($_POST['supprimer']); // mieux que array_pop
     if(del_categorie($_POST)){
@@ -35,7 +26,6 @@ if(isset($_POST['supprimer'])){
         echo "ajout categorie erreur";
     }
 }
-
 if(isset($_POST['modifier'])){
     array_pop($_POST);
     if(update_categorie($_POST)){
@@ -45,15 +35,24 @@ if(isset($_POST['modifier'])){
         echo "modification categorie erreur";
     }
 }
-$title = "Action - Produit - Gestionnaire - Groupy"; 
+
+$idUser = $_SESSION['connectedUser']['id_user'];
+$categories = get_categories();
+$utilisateurs = get_all_users(); //a coder
+
+$title = "Action - Gestionnaire - Groupy"; 
 ?>
 
 <body class="bg-light text-center">
 
     <h1 class="mb-4">Gestion Produits</h1>
     
-    <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addCategorietModal">Ajouter une catégorie</button>
+    <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addCategorietModal">
+        <i class="bi bi-plus-square"></i> Catégorie
+    </button>
     
+    <br><br>
+
     <!-- liste des catégories -->
     <?php if ($categories && $role == "gestionnaire") : ?>
     <h3>Liste des catégories :</h3>
@@ -94,6 +93,39 @@ $title = "Action - Produit - Gestionnaire - Groupy";
     </table>
     <?php elseif ($role == "gestionnaire"): ?>
         <p>Aucune produit publié pour le moment.</p>
+    <?php endif; ?>
+
+    <br><br>
+
+    <!-- liste des utilisateurs -->
+    <?php if ($utilisateurs && $role == "gestionnaire") : ?>
+    <h3 class="">Liste des Utilisateurs :</h3>
+    <table class="table table-bordered table-striped w-50 mx-auto">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Prenom</th>
+                <th>adresse</th>
+                <th>Telephone</th>
+                <th>Email</th>
+                <th>Participation</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($utilisateurs as $utilisateur) : ?>
+                <tr>
+                    <td><?= htmlspecialchars($utilisateur['nom'])?></td>
+                    <td><?= htmlspecialchars($utilisateur['prenom'])?></td>
+                    <td><?= htmlspecialchars($utilisateur['adresse'])?></td>
+                    <td><?= htmlspecialchars($utilisateur['phone'])?></td>
+                    <td><?= htmlspecialchars($utilisateur['email'])?></td>
+                    <td><?= htmlspecialchars($utilisateur['nombre_participations'])?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    <?php elseif ($role == "gestionnaire"): ?>
+        <p>Aucun client pour le moment.</p>
     <?php endif; ?>
     
 </body>
