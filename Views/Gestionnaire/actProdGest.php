@@ -1,4 +1,4 @@
-<?php 
+<?php
 require '../../Layout/header.php'; 
 require '../../Controlleur/ProductController.php';
 
@@ -27,7 +27,7 @@ if(isset($_POST['add_categorie'])){
 }
 
 if(isset($_POST['supprimer'])){
-    array_pop($_POST);
+    unset($_POST['supprimer']); // mieux que array_pop
     if(del_categorie($_POST)){
         header('Location: /groupy/Views/Gestionnaire/actProdGest.php');
         exit();
@@ -98,7 +98,30 @@ $title = "Action - Produit - Gestionnaire - Groupy";
     
 </body>
 
-<!-- modal ajout de categorie -->
+
+<!-- modal validation supression CATEGORIE -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Confirmer la suppression</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+      </div>
+      <div class="modal-body">
+        Êtes-vous sûr de vouloir supprimer cette categorie ?
+      </div>
+      <div class="modal-footer">
+        <form method="post" action="#">
+            <input type="hidden" name="id_categorie" id="idCategorieASupprimer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+            <button type="submit" name="supprimer" class="btn btn-danger">Supprimer</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal ajout de CATEGORIE -->
 <div class="modal fade" id="addCategorietModal" tabindex="-1" aria-labelledby="addCategorietModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content rounded-4 shadow-lg">
@@ -123,29 +146,7 @@ $title = "Action - Produit - Gestionnaire - Groupy";
     </div>
 </div>
 
-<!-- modal validation supression -->
-<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="deleteModalLabel">Confirmer la suppression</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-      </div>
-      <div class="modal-body">
-        Êtes-vous sûr de vouloir supprimer ce produit ?
-      </div>
-      <div class="modal-footer">
-        <form method="post" action="#">
-          <input type="hidden" name="id_produit" id="idProduitASupprimer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-          <button type="submit" name="supprimer" class="btn btn-danger">Supprimer</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- modal modification -->
+<!-- modal modification CATEGORIE -->
 <div class="modal fade" id="updateProdModal" tabindex="-1" aria-labelledby="updateProdModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -181,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
     deleteModal.addEventListener('show.bs.modal', function (event) {
         const button = event.relatedTarget; 
         const idCategorie = button.getAttribute('data-id'); 
-        const inputHidden = deleteModal.querySelector('#idProduitASupprimer');
+        const inputHidden = deleteModal.querySelector('#idCategorieASupprimer');
         inputHidden.value = idCategorie;
     });
 

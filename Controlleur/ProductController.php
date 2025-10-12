@@ -44,12 +44,18 @@ function get_prevente(){
     else{
         try{
             $idUser = $_SESSION['connectedUser']['id_user'];
-            $req = "SELECT * FROM prevente
-                    INNER JOIN produit ON prevente.id_produit = produit.id_produit
-                    WHERE produit.id_vendeur = $idUser;"; 
+            $req = "
+                SELECT prevente.*, produit.*, categorie.lib AS nom_categorie
+                FROM prevente
+                INNER JOIN produit 
+                    ON prevente.id_produit = produit.id_produit
+                INNER JOIN categorie 
+                    ON produit.id_categorie_ = categorie.id_categorie
+                WHERE produit.id_vendeur = $idUser;";
             $stmt = $pdo->prepare($req);
             $stmt->execute();
             $preventes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            var_dump($preventes);
             if($preventes){
                 deconect_db($pdo);
                 return $preventes;
@@ -157,8 +163,7 @@ function add_produit($data){
     }
 }
 
-function published_produit($data){
-    // var_dump($data);
+function create_prevente($data){
     $pdo = connect_bd();
     if(!$pdo) {
         echo "Erreur de connexion à la base de données.";
@@ -171,9 +176,39 @@ function published_produit($data){
             $params = [
                 $data['date_limite'],
                 $data['nombre_minimum'],
-                $data['statut'],
+                "non plubié",
                 $data['prix_prevente'],
                 $data['id_produit']
+            ];
+            $result = $stmt->execute($params);
+            if (!$result) {
+                echo "Erreur lors de l'exécution de la requête.";
+                return false;
+            }else{
+                deconect_db($pdo);
+                return true; 
+            }
+        }
+        catch (PDOException $e) {
+            echo "Erreur lors de la publication du produit : " . $e->getMessage();
+            return false;
+        }
+    }
+}
+
+function published_prevente($data){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }else{
+        try{
+            // ajouter une verification de si le produit est deja en vente
+            $req = "UPDATE prevente SET statut = ? WHERE id_prevente = ?";
+            $stmt = $pdo->prepare($req);
+            $params = [
+                "publié",
+                $data['id_prevente']
             ];
             $result = $stmt->execute($params);
             if (!$result) {
@@ -230,7 +265,7 @@ function del_categorie($idCategorie){
         return false;
     }else{
         try{
-            $idCate = $idProduit['id_categorie'];
+            $idCate = $idCategorie['id_categorie'];
             $req = "DELETE FROM categorie WHERE id_categorie = ?";
             $stmt = $pdo->prepare($req);
             $params = [$idCate];
@@ -284,9 +319,39 @@ function update_categorie($data){
     }
 }
 
-// function update_produit($data){
-
-// }
+function update_produit($data){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }else{
+        try{
+            $req = "UPDATE produit 
+                    SET id_categorie_ = ?, nom = ?, description = ?, prix = ?
+                    WHERE id_produit = ?";
+            $stmt = $pdo->prepare($req);
+            $params = [
+                $data['id_categorie'],
+                $data['nom'],
+                $data['description'],
+                $data['prix'],
+                $data['id_produit']
+            ];
+            $result = $stmt->execute($params);
+            if (!$result) {
+                echo "Erreur lors de l'exécution de la requête.";
+                return false;
+            }else{
+                deconect_db($pdo);
+                return true; 
+            }
+        }
+        catch (PDOException $e) {
+            echo "Erreur lors de la modification du produit : " . $e->getMessage();
+            return false;
+        }
+    }
+}
 // ==================================
 
 ?>
