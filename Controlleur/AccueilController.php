@@ -1,5 +1,31 @@
 <?php
 
+function pariticipation($data){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }else{
+        try{
+            $req = "INSERT INTO participation (id_client, id_prevente) VALUES (:idUser, :idPrevente);";
+            $stmt = $pdo->prepare($req);
+            $stmt->bindParam(':idUser', $_SESSION['connectedUser']['id_user'],PDO::PARAM_INT);
+            $stmt->bindParam(':idPrevente', $data['idPrevente'],PDO::PARAM_INT);
+            $result = $stmt->execute();
+            if(!$result){
+                echo "Erreur lors de l'insertion de la participation.";
+                return false;
+            }
+            deconect_db($pdo);
+            return true;
+        }
+        catch (PDOException $e) {
+            echo "Erreur lors de l'insertion de la participation : " . $e->getMessage();
+            return false;
+        }
+    }
+}
+
 function get_published_prevente(){
     $pdo = connect_bd();
     if(!$pdo) {

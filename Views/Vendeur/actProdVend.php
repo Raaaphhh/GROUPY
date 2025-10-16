@@ -1,10 +1,12 @@
-<?php 
+<?php
 // ini_set('display_errors', 1);
 // ini_set('display_startup_errors', 1);
 // error_reporting(E_ALL);
-require '../../Layout/header.php'; 
+require '../../Layout/header.php';
 require '../../Controlleur/ProductController.php';
 
+$successMessage = '';
+$errorMessage = '';
 $role = get_role($_SESSION['connectedUser']['id_user']);
 if (!isset($_SESSION['connectedUser']) || $role !== "vendeur") {
     header('Location: /groupy/index.php'); 
@@ -42,238 +44,139 @@ if(isset($_POST['modifier_produit'])){
 if(isset($_POST['create_prevente'])){
     array_pop($_POST);
     if(create_prevente($_POST)){
+        $_SESSION['successMessage'] = "Prevente créée avec succès.";
         header('Location: /groupy/Views/Vendeur/actProdvend.php');
         exit();
     }else{
         echo "publihed error";
-    }
-}
-if(isset($_POST['published_prevente'])){
-    unset($_POST['published_prevente']); 
-    if(published_prevente($_POST)){
-        header('Location: /groupy/Views/Vendeur/actProdvend.php');
-        exit();
-    }else{
-        echo "publihed error";
-    }
-}
-if(isset($_POST['update_prevente'])){
-    unset($_POST['update_prevente']); 
-    if(update_prevente($_POST)){
-        header('Location: /groupy/Views/Vendeur/actProdvend.php');
-        exit();
-    }else{
-        echo "del prevene error";
-    }
-}
-if(isset($_POST['supprimer_prevente'])){
-    unset($_POST['supprimer_prevente']); 
-    if(del_prevente($_POST)){
-        header('Location: /groupy/Views/Vendeur/actProdvend.php');
-        exit();
-    }else{
-        echo "del prevene error";
     }
 }
 
+// message de succes
+if (isset($_SESSION['successMessage'])) {
+    $successMessage = $_SESSION['successMessage'];
+    unset($_SESSION['successMessage']);
+}
+
 $idUser = $_SESSION['connectedUser']['id_user'];
-$produits = get_produits($idUser);
+$lst_produit = get_produits($idUser);
 $categories = get_categories();
-$preventes = get_prevente();
+$preventes = get_prevente(); 
 
 require 'modals/add_produit.php';
 require 'modals/del_produit.php';
 require 'modals/update_produit.php';
 require 'modals/create_prevente.php';
-require 'modals/published_prevente.php'; 
-require 'modals/update_prevente.php';
-require 'modals/del_prevente.php';
 
 $title = "Action - Produit - Vendeur - Groupy"; 
 ?>
 
-<body class="bg-light text-center">
-    <h1 class="mb-4">Gestion Produits</h1>
+<div class="container mt-5">
+
+    <?php if ($successMessage): ?>
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <?= htmlspecialchars($successMessage) ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <?php endif; ?>
+
+    <h2 class="mb-4">Liste de vos Poduits</h2>
     <button class="btn btn-success mb-3 me-3" data-bs-toggle="modal" data-bs-target="#addProduitModal">
         <i class="bi bi-plus-square"></i> Produit
     </button>
-    <button class="btn btn-success mb-3 ms-3" data-bs-toggle="modal" data-bs-target="#pulbishedProduitModal">
-        <i class="bi bi-plus-square"></i> Prévente
-    </button>
 
-    <!-- liste des produits -->
-    <h3 class="mt-3">Liste des produits :</h3>
-    <?php if ($produits) : ?>
-    <table class="table table-bordered table-striped">
-        <thead>
+    <div class="table-responsive">
+        <table id="maTable" class="table table-striped table-bordered align-middle">
+        <thead class="table-dark">
             <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Categorie</th>
-                <th>Description</th>
-                <th>Prix</th>
-                <th>Image</th>
-                <th>Actions</th>
+            <th>Id</th>
+            <th>Nom</th>
+            <th>Catégorie</th>
+            <th>Description</th>
+            <th>Prix</th>
+            <th>Image</th>
+            <th></th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($produits as $produit) : ?>
-                <tr>
-                    <td><?= htmlspecialchars($produit['id_produit'])?></td>
-                    <td><?= htmlspecialchars($produit['nom']) ?></td>
-                    <td><?= htmlspecialchars($produit['categorie']) ?></td>
-                    <td><?= htmlspecialchars($produit['description']) ?></td>
-                    <td><?= htmlspecialchars($produit['prix']) ?> €</td>
-                    <td><img src="<?= htmlspecialchars($produit['image']) ?>" alt="Image" width="50"></td>
-                    <td>
-                        <button 
-                            type="button" 
-                            class="btn btn-warning btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#updateProdModal"
-                            data-id="<?= htmlspecialchars($produit['id_produit']) ?>"
-                            data-nom="<?= htmlspecialchars($produit['nom']) ?>"
-                            data-description="<?= htmlspecialchars($produit['description']) ?>"
-                            data-prix="<?= htmlspecialchars($produit['prix']) ?>"
-                            data-categorie="<?= htmlspecialchars($produit['categorie']) ?>">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-
-                        <button 
-                            type="button" 
-                            class="btn btn-danger btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#deleteModal"
-                            data-id="<?= htmlspecialchars($produit['id_produit']) ?>">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-    <?php else: ?>
-        <p>Aucun produit ajouté pour le moment.</p>
-    <?php endif; ?>
-
-    <br><br>
-    
-    <!-- liste des preventes non publiés-->
-    <?php if ($preventes && $role == "vendeur") :?>
-    <h3 class="mt-3">Liste des préventes non publiés:</h3>
-    <table class="table table-bordered table-striped">
-        <thead>
+            <?php foreach ($lst_produit as $produit): ?>
             <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Categorie</th>
-                <th>Prix</th>
-                <th>Image</th>
-                <th>Date limite</th>
-                <th>Nombre minimum</th>
-                <th>Statut</th>
-                <th>Actions</th>
+                <td><?= $produit['id_produit'] ?></td>
+                <td><?= htmlspecialchars($produit['nom']) ?></td>
+                <td><?= htmlspecialchars($produit['categorie']) ?></td>
+                <td><?= htmlspecialchars($produit['description']) ?></td>
+                <td><?= htmlspecialchars($produit['prix']) ?></td>
+                <td>
+                <img src="<?= htmlspecialchars($produit['image']) ?>" alt="Image du produit" style="width: 50px; height: 50px; object-fit: cover;">
+                </td>
+                <td>
+                <?php verif_produit_prevente($produit['id_produit']); ?>
+                <button
+                    <?php if (verif_produit_prevente($produit['id_produit']) === true): ?>
+                    disabled
+                    <?php endif; ?>
+                    type="button" 
+                    class="btn btn-warning btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#updateProdModal"
+                    data-id="<?= htmlspecialchars($produit['id_produit']) ?>"
+                    data-nom="<?= htmlspecialchars($produit['nom']) ?>"
+                    data-description="<?= htmlspecialchars($produit['description']) ?>"
+                    data-prix="<?= htmlspecialchars($produit['prix']) ?>"
+                    data-categorie="<?= htmlspecialchars($produit['categorie']) ?>">
+                    <i class="bi bi-pencil"></i>
+                </button>
+
+                <button 
+                    <?php if (verif_produit_prevente($produit['id_produit']) === true): ?>
+                    disabled
+                    <?php endif; ?>
+                    type="button" 
+                    class="btn btn-danger btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#deleteModal"
+                    data-id="<?= htmlspecialchars($produit['id_produit']) ?>">
+                    <i class="bi bi-trash"></i>
+                </button>
+
+                <button
+                    <?php if (verif_produit_prevente($produit['id_produit']) === true): ?>
+                    disabled
+                    <?php endif; ?>
+                    type="button" 
+                    class="btn btn-success btn-sm"
+                    data-bs-toggle="modal"
+                    data-bs-target="#pulbishedProduitModal"
+                    data-id="<?= htmlspecialchars($produit['id_produit']) ?>"
+                    data-nom="<?= htmlspecialchars($produit['nom']) ?>">
+                    <i class="bi bi-globe2"></i>
+                </button>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($preventes as $prevente) : ?>
-                <?php if ($prevente['statut'] === "non publié") : ?>
-                <tr>
-                    <td><?= htmlspecialchars($prevente ['id_prevente'])?></td>
-                    <td><?= htmlspecialchars($prevente['nom']) ?></td>
-                    <td><?= htmlspecialchars($prevente['nom_categorie']) ?></td>
-                    <td><?= htmlspecialchars($prevente['prix_prevente']) ?> €</td>
-                    <td><img src="<?= htmlspecialchars($prevente['image']) ?>" alt="Image" width="50"></td>
-                    <td><?= htmlspecialchars($prevente['date_limite'])?></td>
-                    <td><?= htmlspecialchars($prevente['nombre_min'])?></td>
-                    <td><?= htmlspecialchars($prevente['statut'])?></td>
-                    <td>
-                        <button 
-                            type="button" 
-                            class="btn btn-warning btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#updatePreventeModal"
-                            data-id="<?= htmlspecialchars($prevente['id_prevente']) ?>"
-                            data-prix_prevente="<?= htmlspecialchars($prevente['prix_prevente']) ?>"
-                            data-date_limite="<?= htmlspecialchars($prevente['date_limite']) ?>"
-                            data-nombre_min="<?= htmlspecialchars($prevente['nombre_min']) ?>">
-                            <i class="bi bi-pencil"></i>
-                        </button>
-
-                        <button 
-                            type="button" 
-                            class="btn btn-primary btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#publishedModal"
-                            data-id="<?= htmlspecialchars($prevente['id_prevente']) ?>">
-                            <i class="bi bi-cloud-upload"></i>
-                        </button>
-
-                        <button 
-                            type="button" 
-                            class="btn btn-danger btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#deletePreventeModal"
-                            data-id="<?= htmlspecialchars($prevente['id_prevente']) ?>">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-                <?php endif; ?>
             <?php endforeach; ?>
         </tbody>
-    </table>
-    <?php endif; ?>
-        
-    <br><br>
+        </table>
+    </div>
 
-    <!-- liste des preventes publiés-->
-    <?php if ($preventes && $role == "vendeur") :?>
-    <h3 class="mt-3">Liste des préventes en ligne :</h3>
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nom</th>
-                <th>Categorie</th>
-                <th>Prix</th>
-                <th>Image</th>
-                <th>Date limite</th>
-                <th>Nombre minimum</th>
-                <th>Statut</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($preventes as $prevente) : ?>
-                <?php if ($prevente['statut'] === "publié") : ?>
-                <tr>
-                    <td><?= htmlspecialchars($prevente ['id_prevente'])?></td>
-                    <td><?= htmlspecialchars($prevente['nom']) ?></td>
-                    <td><?= htmlspecialchars($prevente['nom_categorie']) ?></td>
-                    <td><?= htmlspecialchars($prevente['prix_prevente']) ?> €</td>
-                    <td><img src="<?= htmlspecialchars($prevente['image']) ?>" alt="Image" width="50"></td>
-                    <td><?= htmlspecialchars($prevente['date_limite'])?></td>
-                    <td><?= htmlspecialchars($prevente['nombre_min'])?></td>
-                    <td><?= htmlspecialchars($prevente['statut'])?></td>
-                    <td>
-                        <!-- seulement si il y a aucun participant -->
-                        <button 
-                            type="button" 
-                            class="btn btn-danger btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#"
-                            data-id="<?= htmlspecialchars($prevente['id_prevente']) ?>">
-                            <i class="bi bi-trash"></i>
-                        </button>
-                    </td>
-                </tr>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-    <?php endif; ?>
 
-</body>
+    <a href="/groupy/Views/User/dashboard.php" class="btn btn-primary">Menu</a>
+    <a href="/groupy/Views/Vendeur/actPrevVend.php" class="btn btn-success">Gestion prevente</a>
+</div>
 
 <?php require '../../Layout/footer.php'; ?>
+
+<script>
+  $(document).ready(function () {
+    $('#maTable').DataTable({
+      pageLength: 5,
+      language: {
+        search: "Rechercher :",
+        lengthMenu: "Afficher _MENU_ entrées",
+        info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+        paginate: { previous: "Précédent", next: "Suivant" },
+        zeroRecords: "Aucune correspondance trouvée"
+      }
+    });
+  });
+</script>
+

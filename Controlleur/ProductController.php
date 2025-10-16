@@ -114,6 +114,31 @@ function get_all_users(){
     }
 }
 
+function verif_produit_prevente($idProduit){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }else{
+        try{
+            $req = "SELECT * FROM prevente WHERE id_produit = ?";
+            $stmt = $pdo->prepare($req);
+            $params = [$idProduit];
+            $stmt->execute($params);
+            $produit = $stmt->fetch(PDO::FETCH_ASSOC);
+            deconect_db($pdo);
+            if($produit){
+                return true;
+            }
+            return false;
+        }
+        catch (PDOException $e) {
+            echo "Erreur lors de la récupération des produits : " . $e->getMessage();
+            return false;
+        }
+    }
+}
+
 
 
 // ============= ADD =============

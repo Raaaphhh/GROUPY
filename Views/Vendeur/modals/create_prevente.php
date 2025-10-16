@@ -9,14 +9,8 @@
             <div class="modal-body text-start">
                 <div class="mb-3">
                     <label class="form-label">Produit</label>
-                    <select name="id_produit" class="form-select">
-                            <option value="" disabled selected>-- Sélectionnez un produit --</option>
-                        <?php foreach ($produits as $produit): ?>
-                            <option value="<?= htmlspecialchars($produit['id_produit']) ?>">
-                                <?= htmlspecialchars($produit['nom']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+                    <input type="hidden" name="id_produit" id="published_id_produit" class="form-control">
+                    <input type="text" name="nom_produit" id="published_nom_produit" class="form-control" disabled>
                 </div>
 
                 <div class="mb-3">
@@ -43,3 +37,15 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const createPreventeModal = document.getElementById('pulbishedProduitModal');
+    pulbishedProduitModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+
+        pulbishedProduitModal.querySelector('#published_id_produit').value = button.getAttribute('data-id');
+        pulbishedProduitModal.querySelector('#published_nom_produit').value = button.getAttribute('data-nom');
+    });
+});
+</script>

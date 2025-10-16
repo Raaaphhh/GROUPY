@@ -4,6 +4,16 @@
 // error_reporting(E_ALL);
 include 'Layout/header.php'; 
 require 'Controlleur/AccueilController.php';
+
+if(isset($_POST['participer'])){
+    array_pop($_POST);
+    if(pariticipation($data)){
+        echo "";
+    } else {
+        echo "";
+    }
+}
+
 $allpreventepublisheds = get_published_prevente();
 $title = "Accueil - Groupy"; 
 ?>
@@ -28,24 +38,29 @@ $title = "Accueil - Groupy";
                         <?php endif; ?>
 
                         <div class="card-body d-flex flex-column">
-                            <h5 class="card-title"><?= htmlspecialchars($prevente['nom']); ?></h5>
-                            <p class="card-text text-muted mb-1">
-                                <strong>Catégorie :</strong> <?= htmlspecialchars($prevente['nom_categorie']); ?>
-                            </p>
-                            <p class="card-text"><?= htmlspecialchars($prevente['description']); ?></p>
+                                <h5 class="card-title"><?= htmlspecialchars($prevente['nom']); ?></h5>
+                                <p class="card-text text-muted mb-1">
+                                    <strong>Catégorie :</strong> <?= htmlspecialchars($prevente['nom_categorie']); ?>
+                                </p>
+                                <p class="card-text"><?= htmlspecialchars($prevente['description']); ?></p>
 
-                            <p class="card-text mb-2">
-                                <strong>Prix prévente :</strong> <?= htmlspecialchars($prevente['prix_prevente']); ?> €
-                            </p>
-                            <p class="card-text mb-2">
-                                <strong>Date limite :</strong> <?= htmlspecialchars($prevente['date_limite']); ?>
-                            </p>
-                            <p class="card-text mb-2">
-                                <strong>Objectif :</strong> <?= $nb_participations ?>/<?= htmlspecialchars($prevente['nombre_min']); ?> participants
-                            </p>
+                                <p class="card-text mb-2">
+                                    <strong>Prix prévente :</strong> <?= htmlspecialchars($prevente['prix_prevente']); ?> €
+                                </p>
+                                <p class="card-text mb-2">
+                                    <strong>Date limite :</strong> <?= htmlspecialchars($prevente['date_limite']); ?>
+                                </p>
+                                <p class="card-text mb-2">
+                                    <strong>Objectif :</strong> <?= $nb_participations ?>/<?= htmlspecialchars($prevente['nombre_min']); ?> participants
+                                </p>
 
-                            <a href="" class="btn btn-success mt-auto">Participer</a>
-
+                            <form action="" method="POST">
+                                <input type="hidden" name="idPrevente" value="<?= htmlspecialchars($prevente['id_prevente']); ?>">
+                                <input type="hidden" name="idUser" value="<?= htmlspecialchars($_SESSION['connectedUser']['id_user']); ?>">
+                                <input type="hidden" name="idPrevente" value="<?= $prevente['id_prevente']; ?>">
+                                <button type="submit" name="participer" class="btn btn-dark">Participer</button>
+                            </form>
+                            
                         </div>
                     </div>
                 </div>

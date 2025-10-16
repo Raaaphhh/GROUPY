@@ -30,8 +30,17 @@ $title = "Dashboard - Groupy";
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body text-center">
-                    <h5 class="card-title">Gestion de produits</h5>
+                    <h5 class="card-title">Gestion des produits</h5>
                     <a href="/groupy/Views/Vendeur/actProdVend.php" class="btn btn-success">Voir</a>
+                </div>
+            </div>
+        </div>    
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Gestion des préventes</h5>
+                    <a href="/groupy/Views/Vendeur/actPrevVend.php" class="btn btn-success">Voir</a>
                 </div>
             </div>
         </div>    
