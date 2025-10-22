@@ -7,8 +7,8 @@ require 'Controlleur/AccueilController.php';
 
 if(isset($_POST['participer'])){
     array_pop($_POST);
-    if(pariticipation($data)){
-        echo "";
+    if(pariticipation($_POST)){
+        header("Location: index.php");
     } else {
         echo "";
     }
@@ -53,14 +53,15 @@ $title = "Accueil - Groupy";
                                 <p class="card-text mb-2">
                                     <strong>Objectif :</strong> <?= $nb_participations ?>/<?= htmlspecialchars($prevente['nombre_min']); ?> participants
                                 </p>
-
+                            <?php if (verif_participation($_SESSION['connectedUser']['id_user'], $prevente['id_prevente'])) : ?>
+                                <p class="text-success">Vous participez déjà à cette prévente.</p>
+                            <?php else : ?>
                             <form action="" method="POST">
-                                <input type="hidden" name="idPrevente" value="<?= htmlspecialchars($prevente['id_prevente']); ?>">
                                 <input type="hidden" name="idUser" value="<?= htmlspecialchars($_SESSION['connectedUser']['id_user']); ?>">
                                 <input type="hidden" name="idPrevente" value="<?= $prevente['id_prevente']; ?>">
                                 <button type="submit" name="participer" class="btn btn-dark">Participer</button>
                             </form>
-                            
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -68,9 +69,5 @@ $title = "Accueil - Groupy";
         </div>
     </div>
 <?php endif; ?>    
-
-
-
-
 
 <?php include 'Layout/footer.php'; ?>

@@ -6,21 +6,54 @@ function pariticipation($data){
         echo "Erreur de connexion à la base de données.";
         return false;
     }else{
-        try{
-            $req = "INSERT INTO participation (id_client, id_prevente) VALUES (:idUser, :idPrevente);";
-            $stmt = $pdo->prepare($req);
-            $stmt->bindParam(':idUser', $_SESSION['connectedUser']['id_user'],PDO::PARAM_INT);
-            $stmt->bindParam(':idPrevente', $data['idPrevente'],PDO::PARAM_INT);
-            $result = $stmt->execute();
-            if(!$result){
-                echo "Erreur lors de l'insertion de la participation.";
+        if(verif_participation($data['idUser'], $data['idPrevente'])){
+            return false;
+        }
+        else{
+            try{
+                // var_dump($data);
+                $req = "INSERT INTO participation (id_client, id_prevente) VALUES (:idUser, :idPrevente);";
+                $stmt = $pdo->prepare($req);
+                $stmt->bindParam(':idUser', $_SESSION['connectedUser']['id_user'],PDO::PARAM_INT);
+                $stmt->bindParam(':idPrevente', $data['idPrevente'],PDO::PARAM_INT);
+                $result = $stmt->execute();
+                if(!$result){
+                    echo "Erreur lors de l'insertion de la participation.";
+                    return false;
+                }
+                deconect_db($pdo);
+                return true;
+            }
+            catch (PDOException $e) {
+                echo "Erreur lors de l'insertion de la participation : " . $e->getMessage();
                 return false;
             }
+        }
+    }
+}
+
+function verif_participation($idUser, $idPrevente){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }else{
+        try{
+            $req = "SELECT * FROM participation WHERE id_client = :idUser AND id_prevente = :idPrevente;";
+            $stmt = $pdo->prepare($req);
+            $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
+            $stmt->bindParam(':idPrevente', $idPrevente, PDO::PARAM_INT);
+            $stmt->execute();
+            $participation = $stmt->fetch(PDO::FETCH_ASSOC);
             deconect_db($pdo);
-            return true;
+            if($participation){
+                return true;
+            } else {
+                return false;
+            }
         }
         catch (PDOException $e) {
-            echo "Erreur lors de l'insertion de la participation : " . $e->getMessage();
+            echo "Erreur lors de la vérification de la participation : " . $e->getMessage();
             return false;
         }
     }
@@ -67,7 +100,7 @@ function get_count_participants($idPrevente){
     }
     else{
         try{
-            $req = "SELECT COUNT(*) AS total FROM participation WHERE id_prevente = :idPrevente;";
+            $req = "SELECT COUNT(*) AS total FROM Participation WHERE id_prevente = :idPrevente;";
             $stmt = $pdo->prepare($req);
             $stmt->bindParam(':idPrevente', $idPrevente, PDO::PARAM_INT);
             $stmt->execute();
