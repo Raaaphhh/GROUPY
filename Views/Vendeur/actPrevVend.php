@@ -80,11 +80,28 @@ $title = "Action - Produit - Vendeur - Groupy";
                 <td><img src="<?= htmlspecialchars($prevente['image']) ?>" alt="Image" width="50"></td>
                 <td><?= htmlspecialchars($prevente['date_limite'])?></td>
                 <td><?= htmlspecialchars($prevente['nombre_min'])?></td>
-                <td style="background-color: <?= $prevente['statut'] === 'non publié' ? 'red' : 'green'; ?>;">
+                <td style="background-color: 
+                    <?php 
+                        if ($prevente['statut'] === 'Annule') {
+                            echo '#ffcccc';
+                        } elseif ($prevente['statut'] === 'Valide') {
+                            echo '#ccffcc';
+                        } elseif ($prevente['statut'] === 'Active') {
+                            echo '#cce5ff';
+                        } else {
+                            echo '#e0e0e0';
+                        }
+                    ?>;">
                     <?= htmlspecialchars($prevente['statut']) ?>
                 </td>
                 <td>
                 <button 
+                    <?php if ($prevente['statut'] !== 'non publié'): ?> 
+                    disabled
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title = "Déjà publié"
+                    <?php endif; ?>
                     type="button" 
                     class="btn btn-warning btn-sm"
                     data-bs-toggle="modal"
@@ -96,7 +113,13 @@ $title = "Action - Produit - Vendeur - Groupy";
                     <i class="bi bi-pencil"></i>
                 </button>
 
-                <button 
+                <button
+                    <?php if ($prevente['statut'] !== 'non publié'): ?> 
+                    disabled
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="top"
+                    title = "Déjà publié"
+                    <?php endif; ?> 
                     type="button" 
                     class="btn btn-danger btn-sm"
                     data-bs-toggle="modal"
@@ -106,7 +129,7 @@ $title = "Action - Produit - Vendeur - Groupy";
                 </button>
 
                 <button
-                    <?php if ($prevente['statut'] === 'publié'): ?> 
+                    <?php if ($prevente['statut'] !== 'non publié'): ?> 
                     disabled
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"

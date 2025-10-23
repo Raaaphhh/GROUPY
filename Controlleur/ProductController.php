@@ -1,7 +1,6 @@
 <?php
 session_start();
 // include 'BddConnController.php';
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -139,6 +138,34 @@ function verif_produit_prevente($idProduit){
     }
 }
 
+function uploadPic($file) {
+    // Dossier de stockage physique
+    $target_dir = $_SERVER['DOCUMENT_ROOT'] . "/groupy/photo/";
+    // Nom unique
+    $file_name = uniqid() . "_" . basename($file["name"]);
+    $target_file = $target_dir . $file_name;
+
+    // Chemin public enregistré en BDD
+    $public_path = "/groupy/photo/" . $file_name;
+
+    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    $allowed = ["jpg", "jpeg", "png", "gif"];
+
+    // Vérification image
+    $check = getimagesize($file["tmp_name"]);
+    if ($check === false) return false;
+
+    if (!in_array($imageFileType, $allowed)) return false;
+    if ($file["size"] > 5000000) return false; 
+
+    // Upload
+    if (move_uploaded_file($file["tmp_name"], $target_file)) {
+        return $public_path; // ✅ C'est ce chemin qui ira dans ta BDD
+    } else {
+        return false;
+    }
+}
+
 
 
 // ============= ADD =============
@@ -172,7 +199,6 @@ function add_categorie($data){
 }
 
 function add_produit($data){
-    var_dump($data);
     $pdo = connect_bd();
     if(!$pdo) {
         echo "Erreur de connexion à la base de données.";
@@ -249,7 +275,7 @@ function published_prevente($data){
             $req = "UPDATE prevente SET statut = ? WHERE id_prevente = ?";
             $stmt = $pdo->prepare($req);
             $params = [
-                "publié",
+                "Active",
                 $data['id_prevente']
             ];
             $result = $stmt->execute($params);
@@ -455,5 +481,7 @@ function update_prevente($data){
     }
 }
 // ==================================
+
+
 
 ?>

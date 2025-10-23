@@ -68,14 +68,21 @@ function get_published_prevente(){
     else{
         try{
             $idUser = $_SESSION['connectedUser']['id_user'];
+            // $req = "
+            //     SELECT prevente.*, produit.*, categorie.lib AS nom_categorie
+            //     FROM prevente
+            //     INNER JOIN produit 
+            //         ON prevente.id_produit = produit.id_produit
+            //     INNER JOIN categorie 
+            //         ON produit.id_categorie_ = categorie.id_categorie
+            //     WHERE prevente.statut = 'publie';";
             $req = "
                 SELECT prevente.*, produit.*, categorie.lib AS nom_categorie
                 FROM prevente
                 INNER JOIN produit 
                     ON prevente.id_produit = produit.id_produit
                 INNER JOIN categorie 
-                    ON produit.id_categorie_ = categorie.id_categorie
-                WHERE prevente.statut = 'publie';";
+                    ON produit.id_categorie_ = categorie.id_categorie";
 
             $stmt = $pdo->prepare($req);
             $stmt->execute();

@@ -6,7 +6,7 @@
             <h5 class="modal-title" id="addProduitModalLabel">Ajouter un produit</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
         </div>
-        <form action="#" method="post">
+        <form action="#" method="post" enctype="multipart/form-data">
             <div class="modal-body text-start">
                 <div class="mb-3">
                     <label class="form-label">Catégorie</label>
@@ -32,7 +32,7 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Image</label>
-                    <input type="file" name="pic" class="form-control">
+                    <input type="file" id="pic" name="pic" class="form-control" accept="image/*">
                 </div>
                 
                 <div class="modal-footer">

@@ -43,6 +43,9 @@ $title = "Inscription Pro - Groupy";
                     <button type="submit" class="btn btn-primary" name="submit">Connexion</button>
                 </div>
             </form>
+            <div class="text-center mt-3">
+              <a href="/groupy/Views/User/formRegClient.php" class="text-primary">Pas de compte ? Créez-en un ici</a>
+            </div>
         </div>
       </div>
     </div>

@@ -14,12 +14,19 @@ if (!isset($_SESSION['connectedUser']) || $role !== "vendeur") {
 }
 
 if(isset($_POST['add_produit_produit'])){
-    array_pop($_POST);
-    if(add_produit($_POST)){
-        header('Location: /groupy/Views/Vendeur/actProdvend.php');
-        exit();
+    $file = $_FILES["pic"];
+    $file_path = uploadPic($file);
+    if(!$file_path){
+        echo "Ko picture";
     }else{
-        echo "ajout prod erreur";
+        unset($_POST['add_produit_produit']);
+        $_POST['pic'] = $file_path;
+        if(add_produit($_POST)){
+            header('Location: /groupy/Views/Vendeur/actProdvend.php');
+            exit();
+        }else{
+            echo "ajout prod erreur";
+        }
     }
 }
 if(isset($_POST['supprimer_produit'])){
