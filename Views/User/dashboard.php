@@ -1,4 +1,7 @@
 <?php 
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 require '../../Layout/header.php'; 
 // require ''; 
 
@@ -25,6 +28,17 @@ $title = "Dashboard - Groupy";
                 </div>
             </div>
         </div>
+
+        <?php if ($role === "client"): ?>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Factures</h5>
+                    <a href="/groupy/Views/Client/factures.php" class="btn btn-warning">Voir</a>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
 
         <?php if ($role === "vendeur"): ?>
         <div class="col-md-4">

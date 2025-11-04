@@ -24,7 +24,7 @@ $title = "Accueil - Groupy";
     <div class="container mt-4">
         <div class="row">
             <?php foreach ($allpreventepublisheds as $prevente): ?>
-            <?php if ($prevente['statut'] !== 'Annule') : ?>
+            <?php if ($prevente['statut'] === 'Active') : ?>
                 <?php $nb_participations = get_count_participants($prevente['id_prevente']); ?>
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow-sm position-relative">
@@ -86,11 +86,12 @@ $title = "Accueil - Groupy";
     </div>
 
 <?php else: ?>
-
+    <h1>Preventes en cours : </h1>
     <div class="container mt-4">
         <div class="row">
-            <?php foreach (array_slice($allpreventepublisheds, 0, 3) as $prevente): ?>
-            <?php if ($prevente['statut'] !== 'Annule') : ?>
+            <!-- Essayer de faire en sorte pour seulement 6 ou 3 prevente -->
+            <?php foreach ($allpreventepublisheds as $prevente): ?>
+            <?php if ($prevente['statut'] === 'Active') : ?>
                 <?php $nb_participations = get_count_participants($prevente['id_prevente']); ?>
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow-sm position-relative">

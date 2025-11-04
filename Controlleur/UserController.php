@@ -331,4 +331,68 @@ function logout(){
     session_destroy();
 }
 
+// ===============FONCTION CLIENT PDF FACTURE==================
+
+function generate_facture_pdf($factureData) {
+    require_once __DIR__ . '/../vendor/autoload.php'; 
+
+    $mpdf = new \Mpdf\Mpdf();
+
+    $html = "
+    <h1>Facture Groupy</h1>
+    <p><strong>Nom :</strong> {$factureData['nom']}</p>
+    <p><strong>Catégorie :</strong> {$factureData['nom_categorie']}</p>
+    <p><strong>Prix :</strong> {$factureData['prix_prevente']} €</p>
+    <p><strong>Date limite :</strong> {$factureData['date_limite']}</p>
+    <p><strong>Statut :</strong> {$factureData['statut']}</p>
+    <img src='{$factureData['image']}' width='100'>
+    ";
+
+    $mpdf->WriteHTML($html);
+    $mpdf->Output('facture_' . $factureData['id_prevente'] . '.pdf', 'D');
+}
+
+function get_prevente_client($idUser){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }
+    try {
+        // $req = "SELECT prevente.*, produit.*, categorie.lib AS nom_categorie
+        //         FROM prevente
+        //         INNER JOIN produit 
+        //             ON prevente.id_produit = produit.id_produit
+        //         INNER JOIN categorie 
+        //             ON produit.id_categorie_ = categorie.id_categorie
+        //         INNER JOIN participation
+        //             ON participation.id_prevente = prevente.id_prevente
+        //         WHERE participation.id_client = ?
+        //         AND prevente.statut = 'Valide'";
+        $req = "SELECT prevente.*, produit.*, categorie.lib AS nom_categorie
+                FROM prevente
+                INNER JOIN produit 
+                    ON prevente.id_produit = produit.id_produit
+                INNER JOIN categorie 
+                    ON produit.id_categorie_ = categorie.id_categorie
+                INNER JOIN participation
+                    ON participation.id_prevente = prevente.id_prevente
+                WHERE participation.id_client = ?";
+        $stmt = $pdo->prepare($req);
+        $result = $stmt->execute([$idUser]);
+        if (!$result) {
+            echo "Erreur lors de la récupération des préventes.";
+            deconect_db($pdo);
+            return false;
+        }
+        $preventeData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        deconect_db($pdo);
+        return $preventeData;
+    } catch (PDOException $e) {
+        echo "Erreur lors de la récupération des préventes : " . $e->getMessage();
+        deconect_db($pdo);
+        return false;
+    }
+}
+
 ?> 
