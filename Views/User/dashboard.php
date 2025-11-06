@@ -68,7 +68,16 @@ $title = "Dashboard - Groupy";
                     <a href="/groupy/Views/Gestionnaire/actProdGest.php" class="btn btn-success">Voir</a>
                 </div>
             </div>
-        </div>    
+        </div>   
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Signalement</h5>
+                    <a href="/groupy/Views/Gestionnaire/" class="btn btn-success">Voir</a>
+                </div>
+            </div>
+        </div>   
         <?php endif; ?>
 
     </div>

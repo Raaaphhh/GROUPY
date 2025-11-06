@@ -331,7 +331,7 @@ function logout(){
     session_destroy();
 }
 
-// ===============FONCTION CLIENT PDF FACTURE==================
+// ===============FONCTION CLIENT PDF FACTURE / Signalement==================
 
 function generate_facture_pdf($factureData) {
     require_once __DIR__ . '/../vendor/autoload.php'; 
@@ -390,6 +390,60 @@ function get_prevente_client($idUser){
         return $preventeData;
     } catch (PDOException $e) {
         echo "Erreur lors de la récupération des préventes : " . $e->getMessage();
+        deconect_db($pdo);
+        return false;
+    }
+}
+
+function signalement($data){
+    var_dump($data);
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }
+    else{
+        $date_now = date('Y-m-d H:i:s');
+        $req = "INSERT INTO  signaler (id_user, id_produit, motif, date_signal) VALUES (?, ?, ?, ?)";
+        $stmt = $pdo->prepare($req);
+        $params = [
+            $data['id_user'],
+            $data['id_produit'],
+            $data['motif'],
+            $date_now
+        ];
+        $result = $stmt->execute($params);
+        if (!$result) { 
+            echo "Erreur lors du signalement de la prevente.";
+            return false;
+        }
+        else {
+            deconect_db($pdo);
+            return true;
+        }
+    }
+}
+
+function get_prod_signal($id_produit){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }
+    try {
+        $req = "SELECT * FROM signaler WHERE id_produit = ?";
+        $stmt = $pdo->prepare($req);
+        $result = $stmt->execute([$id_produit]);
+        if (!$result) {
+            echo "Erreur lors de la récupération des signalements.";
+            deconect_db($pdo);
+            return false;
+        }
+        $signalData = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        deconect_db($pdo);
+        return !empty($signalData); 
+    } catch (PDOException $e) {
+        echo "Erreur lors de la récupération des signalements : " . $e->getMessage();
         deconect_db($pdo);
         return false;
     }

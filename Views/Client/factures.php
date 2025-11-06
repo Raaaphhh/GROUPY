@@ -17,6 +17,18 @@ if (isset($_POST['gene_facture'])) {
     exit; 
 }
 
+if (isset($_POST['signaler_produit'])) {
+    unset($_POST['signaler_produit']);
+    if (signalement($_POST)) {
+        header('Location: /groupy/Views/Client/factures.php');
+        exit();
+    } else {
+        echo "signalement error";
+    }
+}
+
+require 'modals/signal.php';
+
 $title = "Factures - Client - Groupy"; 
 ?>
 
@@ -61,10 +73,28 @@ $title = "Factures - Client - Groupy";
                             <button class="btn btn-secondary" type="button" disabled>
                                 <i class="bi bi-file-earmark-arrow-down"></i>
                             </button>
-                        <?php else : ?>
+                            <button class="btn btn-secondary" type="button" disabled>
+                                <i class="bi bi-exclamation-circle"></i>
+                            </button>
+                        <?php elseif ($prevente['statut'] === 'Valide') : ?>
                             <button class="btn btn-primary" name="gene_facture" type="submit">
                                 <i class="bi bi-file-earmark-arrow-down"></i>
                             </button>
+                            <?php if (get_prod_signal($prevente['id_produit']) === false ) : ?>
+                            <button 
+                                type="button" 
+                                class="btn btn-danger"
+                                data-bs-toggle="modal"
+                                data-bs-target="#signalProduitModal"
+                                data-idProduit="<?= htmlspecialchars($prevente['id_produit']) ?>"
+                                data-idUser="<?= htmlspecialchars($_SESSION['connectedUser']['id_user']) ?>">
+                                <i class="bi bi-exclamation-circle"></i>
+                            </button>
+                            <?php else: ?>
+                                <button class="btn btn-secondary" type="button" disabled>
+                                    <i class="bi bi-exclamation-circle"></i>
+                                </button>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </form>
                 </td>
@@ -73,7 +103,6 @@ $title = "Factures - Client - Groupy";
         </tbody>
         </table>
     </div>
-
 </body>
 
 <?php require '../../Layout/footer.php'; ?>
