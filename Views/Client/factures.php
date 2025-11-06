@@ -1,7 +1,4 @@
 <?php 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 require '../../Layout/header.php'; 
 
 if (!isset($_SESSION['connectedUser']) || $_SESSION['connectedUser']['motdepasse_change'] === 0) {
@@ -91,9 +88,7 @@ $title = "Factures - Client - Groupy";
                                 <i class="bi bi-exclamation-circle"></i>
                             </button>
                             <?php else: ?>
-                                <button class="btn btn-secondary" type="button" disabled>
-                                    <i class="bi bi-exclamation-circle"></i>
-                                </button>
+                                <span class="text-danger">signalé ✓</span>
                             <?php endif; ?>
                         <?php endif; ?>
                     </form>

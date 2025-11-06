@@ -73,13 +73,12 @@ $title = "Dashboard - Groupy";
         <div class="col-md-4">
             <div class="card">
                 <div class="card-body text-center">
-                    <h5 class="card-title">Signalement</h5>
-                    <a href="/groupy/Views/Gestionnaire/" class="btn btn-success">Voir</a>
+                    <h5 class="card-title">Blocage</h5>
+                    <a href="/groupy/Views/Gestionnaire/actBloc.php" class="btn btn-success">Voir</a>
                 </div>
             </div>
         </div>   
         <?php endif; ?>
-
     </div>
 </div>
 
