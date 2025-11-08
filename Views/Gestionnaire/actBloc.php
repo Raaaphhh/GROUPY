@@ -7,6 +7,29 @@ require '../../Layout/header.php';
 $lst_all_vendeur = get_all_vendeur();
 // var_dump($lst_all_vendeur);
 
+if (isset($_POST['bloquer'])) {
+    unset($_POST['bloquer']);
+    if (block_vendeur($_POST['id_vendeur'])) {
+        header('Location: /groupy/Views/Gestionnaire/actBloc.php');
+        exit();
+    } else {
+        echo "block error"; 
+    }
+}
+
+if(isset($_POST['debloquer'])){
+    unset($_POST['debloquer']);
+    if(debloquer($_POST['id_vendeur_a_debloquer'])){
+        header('Location: /groupy/Views/Gestionnaire/actBloc.php'); 
+        exit(); 
+    } else{
+        echo "deblock error"; 
+    }
+}
+
+require 'modals/block.php';
+require 'modals/deblock.php';
+
 $title = "Action - Blocage - Groupy"; 
 ?>
 
@@ -34,27 +57,27 @@ $title = "Action - Blocage - Groupy";
                 <td><?= htmlspecialchars($vendeur['adresse_entreprise']) ?></td>
                 <td><?= htmlspecialchars($vendeur['email_pro']) ?></td>
                 <td>
-                    <?php if (verif_vendeur_blocked($vendeur['id_user']) === false) : ?>
+                    <?php if ($vendeur['statut'] === "actif") : ?>
                         <button
                             type="button" 
                             class="btn btn-danger btn-sm"
                             data-bs-toggle="modal"
-                            data-bs-target="#"
+                            data-bs-target="#blockVendeurModal"
                             data-id="<?= htmlspecialchars($vendeur['id_user']) ?>">
                             Bloquer
                         </button>
                         <button type="button" class="btn btn-success btn-sm" disabled>
                             Debloquer
                         </button>
-                    <?php elseif (verif_vendeur_blocked($vendeur['id_user']) === true) :  ?>
-                        <button type="button" class="btn btn-danger btn-sm"disabled>
+                    <?php elseif ($vendeur['statut'] === "bloque") :  ?>
+                        <button type="button" class="btn btn-danger btn-sm" disabled>
                             Bloquer
                         </button>
                         <button
                             type="button" 
                             class="btn btn-success btn-sm"
                             data-bs-toggle="modal"
-                            data-bs-target="#"
+                            data-bs-target="#deblockVendeurModal"
                             data-id="<?= htmlspecialchars($vendeur['id_user']) ?>">
                             Debloquer
                         </button>

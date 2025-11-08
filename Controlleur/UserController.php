@@ -62,9 +62,9 @@ function register_Vendeur($data){
             return false;
         }
         else{
-            $req = "INSERT INTO vendeur (id_user, nom_entreprise, siret, adresse_entreprise, email_pro) VALUES (?, ?, ?, ?, ?)";
+            $req = "INSERT INTO vendeur (id_user, nom_entreprise, siret, adresse_entreprise, email_pro, statut) VALUES (?, ?, ?, ?, ?, ?)";
             $stmt = $pdo->prepare($req);
-            $params = [$idVendeur, $data['nom_entreprise'], $data['siret'], $data['adresse_entreprise'], $data['email_pro']];
+            $params = [$idVendeur, $data['nom_entreprise'], $data['siret'], $data['adresse_entreprise'], $data['email_pro'], "actif"];
             $result = $stmt->execute($params);
             if (!$result) {
                 echo "Erreur lors de l'insertion du vendeur.";
@@ -453,58 +453,6 @@ function get_prod_signal($id_produit){
 
 // ===============BLOCAGE / LITIGE==================
 
-function verif_vendeur_blocked($id_vendeur){
-    $pdo = connect_bd();
-    if(!$pdo) {
-        echo "Erreur de connexion à la base de données.";
-        return false;
-    }
-    try {
-        $req = "SELECT * FROM bloquer 
-                WHERE id_vendeur = ?";
-        $stmt = $pdo->prepare($req);
-        $result = $stmt->execute([$id_vendeur]);
-        if (!$result) {
-            echo "Erreur lors de la vérification du statut du vendeur.";
-            deconect_db($pdo);
-            return false;
-        }
-        $vendeurBlocked = $stmt->fetch(PDO::FETCH_ASSOC);
-        deconect_db($pdo);
-        return !empty($vendeurBlocked);
-    } catch (PDOException $e) {
-        echo "Erreur lors de la vérification du statut du vendeur : " . $e->getMessage();
-        deconect_db($pdo);
-        return false;
-    }
-}
-
-function get_all_vendeur(){
-    $pdo = connect_bd();
-    if(!$pdo) {
-        echo "Erreur de connexion à la base de données.";
-        return false;
-    }
-    try {
-        $req = "SELECT * FROM vendeur
-                JOIN utilisateur ON vendeur.id_user = utilisateur.id_user";
-        $stmt = $pdo->prepare($req);
-        $result = $stmt->execute();
-        if (!$result) {
-            echo "Erreur lors de la récupération des vendeurs.";
-            deconect_db($pdo);
-            return false;
-        }
-        $allVendeur = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        deconect_db($pdo);
-        return $allVendeur;
-    } catch (PDOException $e) {
-        echo "Erreur lors de la récupération des vendeurs : " . $e->getMessage();
-        deconect_db($pdo);
-        return false;
-    }
-}
-
 function auto_block_50pc($id_produit, $id_vendeur){
     $pdo = connect_bd();
     if(!$pdo) {
@@ -561,32 +509,102 @@ function auto_block_50pc($id_produit, $id_vendeur){
     }
 }
 
-function bloquer($idVendeur){
+function get_all_vendeur(){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }
+    try {
+        $req = "SELECT * FROM vendeur
+                JOIN utilisateur ON vendeur.id_user = utilisateur.id_user";
+        $stmt = $pdo->prepare($req);
+        $result = $stmt->execute();
+        if (!$result) {
+            echo "Erreur lors de la récupération des vendeurs.";
+            deconect_db($pdo);
+            return false;
+        }
+        $allVendeur = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        deconect_db($pdo);
+        return $allVendeur;
+    } catch (PDOException $e) {
+        echo "Erreur lors de la récupération des vendeurs : " . $e->getMessage();
+        deconect_db($pdo);
+        return false;
+    }
+}
+
+function block_vendeur($idVendeur){
     $pdo = connect_bd();
     if(!$pdo) {
         echo "Erreur de connexion à la base de données.";
         return false;
     }
     else{
-        $req = "INSERT INTO bloquer (id_vendeur, date_blocage) VALUES (?, ?)";
-        $stmt = $pdo->prepare($req);
-        $date_now = date('Y-m-d H:i:s');
-        $params = [$idVendeur, $date_now];
+        try{
+            $req = "INSERT INTO bloquer (id_vendeur, id_gestionnaire, date_blocage) VALUES (?, ?, ?)";
+            $stmt = $pdo->prepare($req);
+            $date_now = date('Y-m-d H:i:s');
+            $idGestionnaire = $_SESSION['connectedUser']['id_user'];
+            $params = [$idVendeur, $idGestionnaire, $date_now];
+            $result = $stmt->execute($params);
+            if (!$result) {
+                echo "Erreur lors du blocage du vendeur.";
+                return false;
+            }
+
+            $req2 = "UPDATE VENDEUR SET statut = ? WHERE id_user = ? ";
+            $stmt2 = $pdo->prepare($req2);
+            $params = ["bloque", $idVendeur];
+            $result2 = $stmt2->execute($params);
+            if (!$result2) {
+                echo "Erreur lors du blocage du vendeur.";
+                return false;
+            }
+            else {
+                deconect_db($pdo);
+                return true;
+            }
+        }catch (PDOException $e) {
+            echo "Erreur lors du bloquage du vendeur : " . $e->getMessage();
+            deconect_db($pdo);
+            return false;
+        }
+        
+    }
+}
+
+function debloquer($idVendeur){
+    var_dump($idVendeur);
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }
+    else{
+        $req = "INSERT INTO debloquer (id_gestionnaire, id_vendeur, date_deblocage) VALUES (?, ?, ?)";
+        $stmt = $pdo->prepare($req); 
+        $datenow = date('Y-m-d H:i:s');
+        $params = [$_SESSION['connectedUser']['id_user'], $idVendeur, $datenow];
         $result = $stmt->execute($params);
         if (!$result) {
-            echo "Erreur lors du blocage du vendeur.";
+            echo "Erreur lors du déblocage du vendeur.";
             return false;
+        }
+
+        $req2 = "UPDATE VENDEUR SET statut = ? WHERE id_user = ?";
+        $stmt2 = $pdo->prepare($req2);
+        $params = ["actif", $idVendeur];
+        $result2 = $stmt2->execute($params);
+        if(!$result2){
+
         }
         else {
             deconect_db($pdo);
             return true;
         }
     }
-    
-}
-
-function debloquer($idVendeur){
-    
 }
 
 function supprimer_vendeur(){
