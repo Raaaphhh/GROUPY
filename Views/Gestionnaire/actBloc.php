@@ -5,7 +5,6 @@ error_reporting(E_ALL);
 require '../../Layout/header.php';
 
 $lst_all_vendeur = get_all_vendeur();
-// var_dump($lst_all_vendeur);
 
 if (isset($_POST['bloquer'])) {
     unset($_POST['bloquer']);

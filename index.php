@@ -14,6 +14,7 @@ if(isset($_POST['participer'])){
     }
 }
 
+$role_user = get_role($_SESSION['connectedUser']['id_user']);
 $allpreventepublisheds = get_published_prevente();
 $title = "Accueil - Groupy"; 
 ?>
@@ -68,15 +69,18 @@ $title = "Accueil - Groupy";
                                 <strong>Objectif :</strong> <?= $nb_participations ?>/<?= htmlspecialchars($prevente['nombre_min']); ?> participants
                             </p>
 
-                            <?php if (verif_participation($_SESSION['connectedUser']['id_user'], $prevente['id_prevente'])) : ?>
-                                <p class="text-success">Vous participez déjà à cette prévente.</p>
-                            <?php else : ?>
-                                <form action="" method="POST">
-                                    <input type="hidden" name="idUser" value="<?= htmlspecialchars($_SESSION['connectedUser']['id_user']); ?>">
-                                    <input type="hidden" name="idPrevente" value="<?= $prevente['id_prevente']; ?>">
-                                    <button type="submit" name="participer" class="btn btn-dark">Participer</button>
-                                </form>
+                            <?php if($role_user === 'client'): ?>
+                                <?php if (verif_participation($_SESSION['connectedUser']['id_user'], $prevente['id_prevente'])) : ?>
+                                    <p class="text-success">Vous participez déjà à cette prévente.</p>
+                                <?php else : ?>
+                                    <form action="" method="POST">
+                                        <input type="hidden" name="idUser" value="<?= htmlspecialchars($_SESSION['connectedUser']['id_user']); ?>">
+                                        <input type="hidden" name="idPrevente" value="<?= $prevente['id_prevente']; ?>">
+                                        <button type="submit" name="participer" class="btn btn-dark">Participer</button>
+                                    </form>
+                                <?php endif; ?>
                             <?php endif; ?>
+
                         </div>
                     </div>
                 </div>

@@ -454,7 +454,6 @@ function get_prod_signal($id_produit){
     }
 }
 
-
 // ===============BLOCAGE / LITIGE==================
 
 function vendeur_a_alerte($id_vendeur){
