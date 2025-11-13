@@ -44,46 +44,55 @@ $title = "Action - Blocage - Groupy";
             <th>Siret</th>
             <th>Adresse entreprise</th>
             <th>Email Pro</th>
+            <th>Alerte signalements</th>
             <th></th>
             </tr>
         </thead>
         <tbody>
             <?php foreach ($lst_all_vendeur as $vendeur): ?>
-            <tr>
-                <td><?= $vendeur['id_user'] ?></td>
-                <td><?= htmlspecialchars($vendeur['nom']) ?></td>
-                <td><?= htmlspecialchars($vendeur['nom_entreprise']) ?></td>
-                <td><?= htmlspecialchars($vendeur['siret']) ?></td>
-                <td><?= htmlspecialchars($vendeur['adresse_entreprise']) ?></td>
-                <td><?= htmlspecialchars($vendeur['email_pro']) ?></td>
-                <td>
-                    <?php if ($vendeur['statut'] === "actif") : ?>
-                        <button
-                            type="button" 
-                            class="btn btn-danger btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#blockVendeurModal"
-                            data-id="<?= htmlspecialchars($vendeur['id_user']) ?>">
-                            Bloquer
-                        </button>
-                        <button type="button" class="btn btn-success btn-sm" disabled>
-                            Debloquer
-                        </button>
-                    <?php elseif ($vendeur['statut'] === "bloque") :  ?>
-                        <button type="button" class="btn btn-danger btn-sm" disabled>
-                            Bloquer
-                        </button>
-                        <button
-                            type="button" 
-                            class="btn btn-success btn-sm"
-                            data-bs-toggle="modal"
-                            data-bs-target="#deblockVendeurModal"
-                            data-id="<?= htmlspecialchars($vendeur['id_user']) ?>">
-                            Debloquer
-                        </button>
-                    <?php endif; ?>
-                </td>
-            </tr>
+                <?php $alerte = vendeur_a_alerte($vendeur['id_user']); ?>
+                    <tr>
+                        <td><?= $vendeur['id_user'] ?></td>
+                        <td><?= htmlspecialchars($vendeur['nom']) ?></td>
+                        <td><?= htmlspecialchars($vendeur['nom_entreprise']) ?></td>
+                        <td><?= htmlspecialchars($vendeur['siret']) ?></td>
+                        <td><?= htmlspecialchars($vendeur['adresse_entreprise']) ?></td>
+                        <td><?= htmlspecialchars($vendeur['email_pro']) ?></td>
+                        <td>
+                            <?php if ($alerte): ?>
+                                <span class="badge bg-danger">Produit(s) > 50 %</span>
+                            <?php else: ?>
+                                <span class="badge bg-success">RAS</span>
+                            <?php endif; ?>
+                        </td>
+                        <td>
+                            <?php if ($vendeur['statut'] === "actif") : ?>
+                                <button
+                                    type="button"
+                                    class="btn btn-danger btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#blockVendeurModal"
+                                    data-id="<?= htmlspecialchars($vendeur['id_user']) ?>">
+                                    Bloquer
+                                </button>
+                                <button type="button" class="btn btn-success btn-sm" disabled>
+                                    Debloquer
+                                </button>
+                            <?php elseif ($vendeur['statut'] === "bloque") :  ?>
+                                <button type="button" class="btn btn-danger btn-sm" disabled>
+                                    Bloquer
+                                </button>
+                                <button
+                                    type="button" 
+                                    class="btn btn-success btn-sm"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#deblockVendeurModal"
+                                    data-id="<?= htmlspecialchars($vendeur['id_user']) ?>">
+                                    Debloquer
+                                </button>
+                            <?php endif; ?>
+                        </td>
+                    </tr>
             <?php endforeach; ?>
         </tbody>
         </table>

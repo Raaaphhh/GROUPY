@@ -457,60 +457,52 @@ function get_prod_signal($id_produit){
 
 // ===============BLOCAGE / LITIGE==================
 
-function auto_block_50pc($id_produit, $id_vendeur){
+function vendeur_a_alerte($id_vendeur){
     $pdo = connect_bd();
     if(!$pdo) {
         echo "Erreur de connexion à la base de données.";
         return false;
     }
-    try {
-        $req = "SELECT COUNT(*) AS total_signalements
-                FROM signaler
-                WHERE id_produit = ?";
-        $stmt = $pdo->prepare($req);
-        $result = $stmt->execute([$id_produit]);
-        if (!$result) {
-            echo "Erreur lors de la récupération des signalements.";
-            deconect_db($pdo);  
-            return false;
-        }
-        $total_signalements = $stmt->fetch(PDO::FETCH_ASSOC)['total_signalements'];
-
-        $req2 = "SELECT COUNT(*) AS total_acheteurs
-                 FROM participation
-                 WHERE id_prevente IN (
-                     SELECT id_prevente
-                     FROM prevente
-                     WHERE id_produit = ? AND id_vendeur = ?
-                 )";
-        $stmt2 = $pdo->prepare($req2);
-        $result2 = $stmt2->execute([$id_produit, $id_vendeur]);
-        if (!$result2) {
-            echo "Erreur lors de la récupération du nombre d'acheteurs.";
-            deconect_db($pdo);
-            return false;
-        }
-        $total_acheteurs = $stmt2->fetch(PDO::FETCH_ASSOC)['total_acheteurs'];
-
-        if ($total_acheteurs > 0 && ($total_signalements / $total_acheteurs) >= 0.5) {
-            $req3 = "UPDATE vendeur SET est_bloque = 1 WHERE id_user = ?";
-            $stmt3 = $pdo->prepare($req3);
-            $result3 = $stmt3->execute([$id_vendeur]);
-            if (!$result3) {
-                echo "Erreur lors du blocage du vendeur.";
-                deconect_db($pdo);
-                return false;
-            }
-            echo "Le vendeur a été bloqué en raison d'un trop grand nombre de signalements.";
-        }
-        deconect_db($pdo);
-        return true;
-    }
-    catch (PDOException $e) {
-        echo "Erreur lors de la vérification des signalements : " . $e->getMessage();
-        deconect_db($pdo);
+    $sqlProduits = "SELECT id_produit 
+                    FROM produit
+                    WHERE id_vendeur = ?";
+    $stmt = $pdo->prepare($sqlProduits);
+    $stmt->execute([$id_vendeur]);
+    $produits = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    if (empty($produits)) {
         return false;
     }
+
+    foreach ($produits as $prod) {
+        $id_produit = $prod['id_produit'];
+
+        // Nombre total de clients ayant acheté ce produit
+        $sqlClients = "SELECT COUNT(*) AS total
+                       FROM participation
+                       JOIN prevente ON participation.id_prevente = prevente.id_prevente
+                       WHERE id_produit = ?";
+        $stmtC = $pdo->prepare($sqlClients);
+        $stmtC->execute([$id_produit]);
+        $total_clients = $stmtC->fetch()['total'];
+        if ($total_clients == 0) {
+            continue;
+        }
+
+        // Nombre de signalements pour ce produit
+        $sqlSignal = "SELECT COUNT(*) AS nb
+                      FROM signaler
+                      WHERE id_produit = ?";
+        $stmtS = $pdo->prepare($sqlSignal);
+        $stmtS->execute([$id_produit]);
+        $nb_signalements = $stmtS->fetch()['nb'];
+
+        $pourcentage = ($nb_signalements / $total_clients) * 100;
+
+        if ($pourcentage >= 50) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function get_all_vendeur(){
@@ -638,7 +630,7 @@ function get_vendeur_blocked($idUser){
 }
 
 function supprimer_vendeur(){
-    
+    // a coder
 }
 
 ?> 
