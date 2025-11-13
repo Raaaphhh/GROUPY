@@ -3,7 +3,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require '../../Layout/header.php'; 
-// require ''; 
+
+if(get_vendeur_blocked($_SESSION['connectedUser']['id_user']) === "bloqué"){
+    header('Location: /groupy/Views/User/blocked.php'); 
+    exit();
+}
 
 if (!isset($_SESSION['connectedUser']) || $_SESSION['connectedUser']['motdepasse_change'] === 0) {
     header('Location: /groupy/Views/User/formco.php'); 

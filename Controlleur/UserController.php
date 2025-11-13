@@ -126,6 +126,10 @@ function login($data){
     else{
         $existUser = get_user($data['email'], $data['motdepasse']);
         if($existUser){
+            if(get_vendeur_blocked($existUser['id_user'])){
+                deconect_db($pdo);
+                return "bloque";
+            }
             $_SESSION['connectedUser'] = $existUser;
             check_motdepasse_change();
             deconect_db($pdo);
@@ -576,7 +580,6 @@ function block_vendeur($idVendeur){
 }
 
 function debloquer($idVendeur){
-    var_dump($idVendeur);
     $pdo = connect_bd();
     if(!$pdo) {
         echo "Erreur de connexion à la base de données.";
@@ -603,6 +606,33 @@ function debloquer($idVendeur){
         else {
             deconect_db($pdo);
             return true;
+        }
+    }
+}
+
+function get_vendeur_blocked($idUser){
+    $pdo = connect_bd();
+    if(!$pdo) {
+        echo "Erreur de connexion à la base de données.";
+        return false;
+    }
+    else{
+        try {
+            $req = "SELECT * FROM vendeur WHERE id_user = ? AND statut = 'bloque'";
+            $stmt = $pdo->prepare($req);
+            $result = $stmt->execute([$idUser]);
+            if (!$result) {
+                echo "Erreur lors de la récupération du vendeur bloqué.";
+                deconect_db($pdo);
+                return false;
+            }
+            $vendeurData = $stmt->fetch(PDO::FETCH_ASSOC);
+            deconect_db($pdo);
+            return $vendeurData ? true : false;
+        } catch (PDOException $e) {
+            echo "Erreur lors de la récupération du vendeur bloqué : " . $e->getMessage();
+            deconect_db($pdo);
+            return false;
         }
     }
 }

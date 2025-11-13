@@ -8,7 +8,11 @@ include '../../Layout/header.php';
 if (isset($_POST['submit'])) {
   array_pop($_POST);
   try{
-    login($_POST);
+    $result = login($_POST);
+    if ($result === "bloque") {
+      header("Location: /groupy/Views/User/blocked.php");
+      exit();
+    } 
   }
   catch(Exception $e){
     echo 'Erreur : '.$e->getMessage();
