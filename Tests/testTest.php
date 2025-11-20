@@ -1,0 +1,13 @@
+<?php 
+use PHPUnit\Framework\TestCase;
+
+class testTest extends TestCase
+{
+    public function testExemple()
+    {
+        $result = 2 + 2;
+        $this->assertEquals(4, $result);
+    }
+}
+
+?>
