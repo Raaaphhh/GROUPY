@@ -8,6 +8,11 @@ class testTest extends TestCase
         $result = 2 + 2;
         $this->assertEquals(4, $result);
     }
+
+    public function testExemple2(){
+        $result = "hello";
+        $this->assertEquals("hello", $result);
+    }
 }
 
 ?>

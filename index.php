@@ -93,7 +93,6 @@ $title = "Accueil - Groupy";
     <h1>Preventes en cours : </h1>
     <div class="container mt-4">
         <div class="row">
-            <!-- Essayer de faire en sorte pour seulement 6 ou 3 prevente -->
             <?php foreach ($allpreventepublisheds as $prevente): ?>
             <?php if ($prevente['statut'] === 'Active') : ?>
                 <?php $nb_participations = get_count_participants($prevente['id_prevente']); ?>
