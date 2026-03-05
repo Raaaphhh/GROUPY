@@ -67,11 +67,11 @@ function get_published_prevente(){
     }
     else{
         try{
-            $idUser = $_SESSION['connectedUser']['id_user'];
+            $idUser = isset($_SESSION['connectedUser']) ? $_SESSION['connectedUser']['id_user'] : null;
             $req = "
                 SELECT Prevente.*, Produit.*, Categorie.lib AS nom_categorie
                 FROM Prevente
-                INNER JOIN produit 
+                INNER JOIN Produit 
                     ON Prevente.id_produit = Produit.id_produit
                 INNER JOIN Categorie 
                     ON Produit.id_categorie_ = Categorie.id_categorie";
