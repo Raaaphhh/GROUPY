@@ -1,4 +1,4 @@
-FROM php:8.3-apache
+FROM php:8.3-cli
 
 RUN apt-get update && apt-get install -y \
     git \
@@ -9,9 +9,6 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_mysql \
     && apt-get clean
-
-RUN rm -f /etc/apache2/mods-enabled/mpm_event.conf /etc/apache2/mods-enabled/mpm_event.load \
-    && a2enmod mpm_prefork rewrite
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -24,4 +21,4 @@ RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+CMD ["php", "-S", "0.0.0.0:80", "-t", "/var/www/html"]
