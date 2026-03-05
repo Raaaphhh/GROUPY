@@ -12,7 +12,7 @@ function pariticipation($data){
         else{
             try{
                 // var_dump($data);
-                $req = "INSERT INTO participation (id_client, id_prevente) VALUES (:idUser, :idPrevente);";
+                $req = "INSERT INTO Participation (id_client, id_prevente) VALUES (:idUser, :idPrevente);";
                 $stmt = $pdo->prepare($req);
                 $stmt->bindParam(':idUser', $_SESSION['connectedUser']['id_user'],PDO::PARAM_INT);
                 $stmt->bindParam(':idPrevente', $data['idPrevente'],PDO::PARAM_INT);
@@ -39,7 +39,7 @@ function verif_participation($idUser, $idPrevente){
         return false;
     }else{
         try{
-            $req = "SELECT * FROM participation WHERE id_client = :idUser AND id_prevente = :idPrevente;";
+            $req = "SELECT * FROM Participation WHERE id_client = :idUser AND id_prevente = :idPrevente;";
             $stmt = $pdo->prepare($req);
             $stmt->bindParam(':idUser', $idUser, PDO::PARAM_INT);
             $stmt->bindParam(':idPrevente', $idPrevente, PDO::PARAM_INT);
@@ -68,21 +68,13 @@ function get_published_prevente(){
     else{
         try{
             $idUser = $_SESSION['connectedUser']['id_user'];
-            // $req = "
-            //     SELECT prevente.*, produit.*, categorie.lib AS nom_categorie
-            //     FROM prevente
-            //     INNER JOIN produit 
-            //         ON prevente.id_produit = produit.id_produit
-            //     INNER JOIN categorie 
-            //         ON produit.id_categorie_ = categorie.id_categorie
-            //     WHERE prevente.statut = 'publie';";
             $req = "
-                SELECT prevente.*, produit.*, categorie.lib AS nom_categorie
-                FROM prevente
+                SELECT Prevente.*, Produit.*, Categorie.lib AS nom_categorie
+                FROM Prevente
                 INNER JOIN produit 
-                    ON prevente.id_produit = produit.id_produit
-                INNER JOIN categorie 
-                    ON produit.id_categorie_ = categorie.id_categorie";
+                    ON Prevente.id_produit = Produit.id_produit
+                INNER JOIN Categorie 
+                    ON Produit.id_categorie_ = Categorie.id_categorie";
 
             $stmt = $pdo->prepare($req);
             $stmt->execute();

@@ -22,7 +22,7 @@ function register_utilisateur($data){
         else{
             $motdepasse_non_hash = $data['motdepasse'];
             $data['motdepasse'] = password_hash($data['motdepasse'], PASSWORD_BCRYPT);
-            $req = "INSERT INTO utilisateur (nom, prenom, adresse, phone, email, motdepasse) VALUES (?, ?, ?, ?, ?, ?)";
+            $req = "INSERT INTO Utilisateur (nom, prenom, adresse, phone, email, motdepasse) VALUES (?, ?, ?, ?, ?, ?)";
             $stmt = $pdo->prepare($req);
             $params = [
                 $data['nom'],
@@ -62,7 +62,7 @@ function register_Vendeur($data){
             return false;
         }
         else{
-            $req = "INSERT INTO vendeur (id_user, nom_entreprise, siret, adresse_entreprise, email_pro, statut) VALUES (?, ?, ?, ?, ?, ?)";
+            $req = "INSERT INTO Vendeur (id_user, nom_entreprise, siret, adresse_entreprise, email_pro, statut) VALUES (?, ?, ?, ?, ?, ?)";
             $stmt = $pdo->prepare($req);
             $params = [$idVendeur, $data['nom_entreprise'], $data['siret'], $data['adresse_entreprise'], $data['email_pro'], "actif"];
             $result = $stmt->execute($params);
@@ -99,7 +99,7 @@ function register_Client($data){
             return false; 
         }
         else{
-            $req = "INSERT INTO client (id_user) VALUES (?)";
+            $req = "INSERT INTO Client (id_user) VALUES (?)";
             $stmt = $pdo->prepare($req);
             $params = [$idClient];
             $result = $stmt->execute($params);
@@ -153,7 +153,7 @@ function get_user($email, $password){
     }
     else{
         try{
-            $req = "SELECT * FROM utilisateur WHERE email = ?";
+            $req = "SELECT * FROM Utilisateur WHERE email = ?";
             $stmt = $pdo->prepare($req);
             $result = $stmt->execute([$email]);
             if (!$result) {
@@ -191,7 +191,7 @@ function updateUser($data, $role){
     }
     else{
         $data['id'] = $_SESSION['connectedUser']['id_user'];
-        $reqUser = "UPDATE utilisateur 
+        $reqUser = "UPDATE Utilisateur 
             SET nom = ?, prenom = ?, adresse = ?, phone = ?, email = ? 
             WHERE id_user = ?";
         $stmtUser = $pdo->prepare($reqUser);
@@ -210,7 +210,7 @@ function updateUser($data, $role){
         }
 
         if($role == "vendeur") {
-            $reqVendeur = "UPDATE vendeur 
+            $reqVendeur = "UPDATE Vendeur 
                 SET nom_entreprise = ?, siret = ?, adresse_entreprise = ?, email_pro = ? 
                 WHERE id_user = ?";
             $stmtVendeur = $pdo->prepare($reqVendeur);
@@ -249,7 +249,7 @@ function get_role($iduserConnected) {
     }
     try {
         $idUser = $iduserConnected;
-        $stmt = $pdo->prepare("SELECT * FROM vendeur WHERE id_user = :id");
+        $stmt = $pdo->prepare("SELECT * FROM Vendeur WHERE id_user = :id");
         $stmt->execute(['id' => $idUser]);
         $vendeur = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($vendeur) {
@@ -258,7 +258,7 @@ function get_role($iduserConnected) {
             return "vendeur";
         }
 
-        $stmt = $pdo->prepare("SELECT * FROM client WHERE id_user = :id");
+        $stmt = $pdo->prepare("SELECT * FROM Client WHERE id_user = :id");
         $stmt->execute(['id' => $idUser]);
         $client = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($client) {
@@ -266,7 +266,7 @@ function get_role($iduserConnected) {
             return "client";
         }
 
-        $stmt = $pdo->prepare("SELECT * FROM gestionnaire WHERE id_user = :id");
+        $stmt = $pdo->prepare("SELECT * FROM Gestionnaire WHERE id_user = :id");
         $stmt->execute(['id' => $idUser]);
         $gestionnaire = $stmt->fetch(PDO::FETCH_ASSOC);
         if ($gestionnaire) {
@@ -313,7 +313,7 @@ function changePassword($data){
     $idUser = $_SESSION['connectedUser']['id_user'];
     $role = get_role($idUser);
     $hashedPassword = password_hash($data['new_password'], PASSWORD_BCRYPT);
-    $req = "UPDATE utilisateur SET motdepasse = ?, motdepasse_change = 1 WHERE id_user = ?";
+    $req = "UPDATE Utilisateur SET motdepasse = ?, motdepasse_change = 1 WHERE id_user = ?";
     $stmt   = $pdo->prepare($req);
     $result = $stmt->execute([$hashedPassword, $idUser]);
     if (!$result) {
@@ -321,7 +321,7 @@ function changePassword($data){
         return false;
     }
     if ($role === "gestionnaire") {
-        $req2   = "UPDATE gestionnaire SET est_actif = 1 WHERE id_user = ?";
+        $req2   = "UPDATE Gestionnaire SET est_actif = 1 WHERE id_user = ?";
         $stmt2  = $pdo->prepare($req2);
         $result = $stmt2->execute([$idUser]);
     }
@@ -364,25 +364,15 @@ function get_prevente_client($idUser){
         return false;
     }
     try {
-        // $req = "SELECT prevente.*, produit.*, categorie.lib AS nom_categorie
-        //         FROM prevente
-        //         INNER JOIN produit 
-        //             ON prevente.id_produit = produit.id_produit
-        //         INNER JOIN categorie 
-        //             ON produit.id_categorie_ = categorie.id_categorie
-        //         INNER JOIN participation
-        //             ON participation.id_prevente = prevente.id_prevente
-        //         WHERE participation.id_client = ?
-        //         AND prevente.statut = 'Valide'";
-        $req = "SELECT prevente.*, produit.*, categorie.lib AS nom_categorie
-                FROM prevente
-                INNER JOIN produit 
-                    ON prevente.id_produit = produit.id_produit
-                INNER JOIN categorie 
-                    ON produit.id_categorie_ = categorie.id_categorie
-                INNER JOIN participation
-                    ON participation.id_prevente = prevente.id_prevente
-                WHERE participation.id_client = ?";
+        $req = "SELECT Prevente.*, Produit.*, Categorie.lib AS nom_categorie
+                FROM Prevente
+                INNER JOIN Produit 
+                    ON Prevente.id_produit = Produit.id_produit
+                INNER JOIN Categorie 
+                    ON Produit.id_categorie_ = Categorie.id_categorie
+                INNER JOIN Participation
+                    ON Participation.id_prevente = Prevente.id_prevente
+                WHERE Participation.id_client = ?";
         $stmt = $pdo->prepare($req);
         $result = $stmt->execute([$idUser]);
         if (!$result) {
@@ -409,7 +399,7 @@ function signalement($data){
     }
     else{
         $date_now = date('Y-m-d H:i:s');
-        $req = "INSERT INTO  signaler (id_user, id_produit, motif, date_signal) VALUES (?, ?, ?, ?)";
+        $req = "INSERT INTO  Signaler (id_user, id_produit, motif, date_signal) VALUES (?, ?, ?, ?)";
         $stmt = $pdo->prepare($req);
         $params = [
             $data['id_user'],
@@ -436,7 +426,7 @@ function get_prod_signal($id_produit){
         return false;
     }
     try {
-        $req = "SELECT * FROM signaler WHERE id_produit = ?";
+        $req = "SELECT * FROM Signaler WHERE id_produit = ?";
         $stmt = $pdo->prepare($req);
         $result = $stmt->execute([$id_produit]);
         if (!$result) {
@@ -463,7 +453,7 @@ function vendeur_a_alerte($id_vendeur){
         return false;
     }
     $sqlProduits = "SELECT id_produit 
-                    FROM produit
+                    FROM Produit
                     WHERE id_vendeur = ?";
     $stmt = $pdo->prepare($sqlProduits);
     $stmt->execute([$id_vendeur]);
@@ -477,8 +467,8 @@ function vendeur_a_alerte($id_vendeur){
 
         // Nombre total de clients ayant acheté ce produit
         $sqlClients = "SELECT COUNT(*) AS total
-                       FROM participation
-                       JOIN prevente ON participation.id_prevente = prevente.id_prevente
+                       FROM Participation
+                       JOIN Prevente ON Participation.id_prevente = Prevente.id_prevente
                        WHERE id_produit = ?";
         $stmtC = $pdo->prepare($sqlClients);
         $stmtC->execute([$id_produit]);
@@ -489,7 +479,7 @@ function vendeur_a_alerte($id_vendeur){
 
         // Nombre de signalements pour ce produit
         $sqlSignal = "SELECT COUNT(*) AS nb
-                      FROM signaler
+                      FROM Signaler
                       WHERE id_produit = ?";
         $stmtS = $pdo->prepare($sqlSignal);
         $stmtS->execute([$id_produit]);
@@ -511,8 +501,8 @@ function get_all_vendeur(){
         return false;
     }
     try {
-        $req = "SELECT * FROM vendeur
-                JOIN utilisateur ON vendeur.id_user = utilisateur.id_user";
+        $req = "SELECT * FROM Vendeur
+                JOIN Utilisateur ON Vendeur.id_user = Utilisateur.id_user";
         $stmt = $pdo->prepare($req);
         $result = $stmt->execute();
         if (!$result) {
@@ -538,7 +528,7 @@ function block_vendeur($idVendeur){
     }
     else{
         try{
-            $req = "INSERT INTO bloquer (id_vendeur, id_gestionnaire, date_blocage) VALUES (?, ?, ?)";
+            $req = "INSERT INTO Bloquer (id_vendeur, id_gestionnaire, date_blocage) VALUES (?, ?, ?)";
             $stmt = $pdo->prepare($req);
             $date_now = date('Y-m-d H:i:s');
             $idGestionnaire = $_SESSION['connectedUser']['id_user'];
@@ -549,7 +539,7 @@ function block_vendeur($idVendeur){
                 return false;
             }
 
-            $req2 = "UPDATE VENDEUR SET statut = ? WHERE id_user = ? ";
+            $req2 = "UPDATE Vendeur SET statut = ? WHERE id_user = ? ";
             $stmt2 = $pdo->prepare($req2);
             $params = ["bloque", $idVendeur];
             $result2 = $stmt2->execute($params);
@@ -577,7 +567,7 @@ function debloquer($idVendeur){
         return false;
     }
     else{
-        $req = "INSERT INTO debloquer (id_gestionnaire, id_vendeur, date_deblocage) VALUES (?, ?, ?)";
+        $req = "INSERT INTO Debloquer (id_gestionnaire, id_vendeur, date_deblocage) VALUES (?, ?, ?)";
         $stmt = $pdo->prepare($req); 
         $datenow = date('Y-m-d H:i:s');
         $params = [$_SESSION['connectedUser']['id_user'], $idVendeur, $datenow];
@@ -587,7 +577,7 @@ function debloquer($idVendeur){
             return false;
         }
 
-        $req2 = "UPDATE VENDEUR SET statut = ? WHERE id_user = ?";
+        $req2 = "UPDATE Vendeur SET statut = ? WHERE id_user = ?";
         $stmt2 = $pdo->prepare($req2);
         $params = ["actif", $idVendeur];
         $result2 = $stmt2->execute($params);
@@ -609,7 +599,7 @@ function get_vendeur_blocked($idUser){
     }
     else{
         try {
-            $req = "SELECT * FROM vendeur WHERE id_user = ? AND statut = 'bloque'";
+            $req = "SELECT * FROM Vendeur WHERE id_user = ? AND statut = 'bloque'";
             $stmt = $pdo->prepare($req);
             $result = $stmt->execute([$idUser]);
             if (!$result) {

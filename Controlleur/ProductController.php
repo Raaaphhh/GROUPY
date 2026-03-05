@@ -16,9 +16,9 @@ function get_produits($idUserCo) {
             $req = "
                 SELECT p.id_produit, p.nom, p.description, p.prix, p.image, 
                     p.id_vendeur, p.created_at, p.updated_at,
-                    c.lib AS categorie
-                FROM produit p
-                INNER JOIN categorie c ON p.id_categorie_ = c.id_categorie
+                    c.lib AS Categorie
+                FROM Produit p
+                INNER JOIN Categorie c ON p.id_categorie_ = c.id_categorie
                 WHERE p.id_vendeur = $idUserCo
             ";
             $stmt = $pdo->prepare($req);
@@ -44,13 +44,13 @@ function get_prevente(){
         try{
             $idUser = $_SESSION['connectedUser']['id_user'];
             $req = "
-                SELECT prevente.*, produit.*, categorie.lib AS nom_categorie
-                FROM prevente
-                INNER JOIN produit 
-                    ON prevente.id_produit = produit.id_produit
-                INNER JOIN categorie 
-                    ON produit.id_categorie_ = categorie.id_categorie
-                WHERE produit.id_vendeur = $idUser;";
+                SELECT Prevente.*, Produit.*, Categorie.lib AS nom_categorie
+                FROM Prevente
+                INNER JOIN Produit 
+                    ON Prevente.id_produit = Produit.id_produit
+                INNER JOIN Categorie 
+                    ON Produit.id_categorie_ = Categorie.id_categorie
+                WHERE Produit.id_vendeur = $idUser;";
             $stmt = $pdo->prepare($req);
             $stmt->execute();
             $preventes = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -73,7 +73,7 @@ function get_categories(){
         return false;
     }else{
         try{
-            $req = "SELECT id_categorie, lib FROM categorie";
+            $req = "SELECT id_categorie, lib FROM Categorie";
             $stmt = $pdo->prepare($req);
             $stmt->execute();
             $categories = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -95,9 +95,9 @@ function get_all_users(){
     }else{
         try{
             $req = "SELECT u.id_user,u.nom,u.prenom, u.adresse,u.phone, u.email,
-                        COUNT(p.id_particiption) AS nombre_participations FROM utilisateur u
-                    INNER JOIN client c ON u.id_user = c.id_user
-                    LEFT JOIN participation p ON c.id_user = p.id_client
+                        COUNT(p.id_particiption) AS nombre_participations FROM Utilisateur u
+                    INNER JOIN Client c ON u.id_user = c.id_user
+                    LEFT JOIN Participation p ON c.id_user = p.id_client
                     GROUP BY u.id_user, u.nom, u.prenom, u.email
                     ORDER BY nombre_participations DESC;";
             $stmt = $pdo->prepare($req);
@@ -120,7 +120,7 @@ function verif_produit_prevente($idProduit){
         return false;
     }else{
         try{
-            $req = "SELECT * FROM prevente WHERE id_produit = ?";
+            $req = "SELECT * FROM Prevente WHERE id_produit = ?";
             $stmt = $pdo->prepare($req);
             $params = [$idProduit];
             $stmt->execute($params);
@@ -160,7 +160,7 @@ function uploadPic($file) {
 
     // Upload
     if (move_uploaded_file($file["tmp_name"], $target_file)) {
-        return $public_path; // ✅ C'est ce chemin qui ira dans ta BDD
+        return $public_path;
     } else {
         return false;
     }
@@ -176,7 +176,7 @@ function add_categorie($data){
         return false;
     }else{
         try{
-            $req = "INSERT INTO categorie (id_gestionnaire, lib) VALUES (?, ?)";
+            $req = "INSERT INTO Categorie (id_gestionnaire, lib) VALUES (?, ?)";
             $stmt = $pdo->prepare($req);
             $params = [
                 $_SESSION['connectedUser']['id_user'],
@@ -205,7 +205,7 @@ function add_produit($data){
         return false;
     }else{
         try{
-            $req = "INSERT INTO produit (id_categorie_, nom, description, prix, image, id_vendeur) 
+            $req = "INSERT INTO Produit (id_categorie_, nom, description, prix, image, id_vendeur) 
                     VALUES (?, ?, ?, ?, ?, ?)";
             $stmt = $pdo->prepare($req);
             $params = [
@@ -240,7 +240,7 @@ function create_prevente($data){
     }else{
         try{
             // ajouter une verification de si le produit est deja en vente
-            $req = "INSERT INTO prevente (date_limite, nombre_min, statut, prix_prevente, id_produit) VALUES (?,?,?,?,?)";
+            $req = "INSERT INTO Prevente (date_limite, nombre_min, statut, prix_prevente, id_produit) VALUES (?,?,?,?,?)";
             $stmt = $pdo->prepare($req);
             $params = [
                 $data['date_limite'],
@@ -272,7 +272,7 @@ function published_prevente($data){
         return false;
     }else{
         try{
-            $req = "UPDATE prevente SET statut = ? WHERE id_prevente = ?";
+            $req = "UPDATE Prevente SET statut = ? WHERE id_prevente = ?";
             $stmt = $pdo->prepare($req);
             $params = [
                 "Active",
@@ -307,7 +307,7 @@ function del_produit($idProduit){
     }else{
         try{
             $idProd = $idProduit['id_produit'];
-            $req = "DELETE FROM produit WHERE id_produit = ?";
+            $req = "DELETE FROM Produit WHERE id_produit = ?";
             $stmt = $pdo->prepare($req);
             $params = [$idProd];
             $result = $stmt->execute($params);
@@ -334,7 +334,7 @@ function del_categorie($idCategorie){
     }else{
         try{
             $idCate = $idCategorie['id_categorie'];
-            $req = "DELETE FROM categorie WHERE id_categorie = ?";
+            $req = "DELETE FROM Categorie WHERE id_categorie = ?";
             $stmt = $pdo->prepare($req);
             $params = [$idCate];
             $result = $stmt->execute($params);
@@ -361,7 +361,7 @@ function del_prevente($idPrevente){
     }else{
         try{
             $idPrev = $idPrevente['id_prevente'];
-            $req = "DELETE FROM prevente WHERE id_prevente = ?";
+            $req = "DELETE FROM Prevente WHERE id_prevente = ?";
             $stmt = $pdo->prepare($req);
             $params = [$idPrev];
             $result = $stmt->execute($params);
@@ -392,7 +392,7 @@ function update_categorie($data){
         return false;
     }else{
         try{
-            $req = "UPDATE categorie SET lib = ? WHERE id_categorie = ?";
+            $req = "UPDATE Categorie SET lib = ? WHERE id_categorie = ?";
             $stmt = $pdo->prepare($req);
             $params = [
                 $data['nom'],
@@ -421,7 +421,7 @@ function update_produit($data){
         return false;
     }else{
         try{
-            $req = "UPDATE produit 
+            $req = "UPDATE Produit 
                     SET id_categorie_ = ?, nom = ?, description = ?, prix = ?
                     WHERE id_produit = ?";
             $stmt = $pdo->prepare($req);
@@ -455,7 +455,7 @@ function update_prevente($data){
         return false;
     }else{
         try{
-            $req = "UPDATE prevente 
+            $req = "UPDATE Prevente 
                     SET prix_prevente = ?, date_limite = ?, nombre_min = ?
                     WHERE id_prevente = ?";
             $stmt = $pdo->prepare($req);
