@@ -3,7 +3,7 @@ require __DIR__ . '/../config.php';
 
 if (isset($_POST['submit_logout'])) {
     logout();
-    header('Location: /groupy/index.php'); 
+    header('Location: ' . BASE_URL . '/index.php'); 
     exit();
 }
 ?>
@@ -39,19 +39,13 @@ if (isset($_POST['submit_logout'])) {
 <header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/groupy/">Groupy</a>
+            <a class="navbar-brand" href="<?= BASE_URL ?>">Groupy</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
                     aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                <!-- <ul class="navbar-nav">
-                    <li class="nav-item"><a class="nav-link active" href="index.php">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="features.php">Features</a></li>
-                    <li class="nav-item"><a class="nav-link" href="pricing.php">Pricing</a></li>
-                </ul> -->
-
                 <div class="ms-auto d-flex gap-2">
                     <?php if (!isset($_SESSION['connectedUser'])): ?>
                         <div class="dropdown">
@@ -60,16 +54,16 @@ if (isset($_POST['submit_logout'])) {
                                 Inscription
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <li><a class="dropdown-item text-primary" href="/groupy/Views/User/formRegClient.php">Inscription <strong>client</strong></a></li>
-                                <li><a class="dropdown-item text-primary" href="/groupy/Views/User/formRegVendeur.php">Inscription <strong>professionel</strong></a></li>
+                                <li><a class="dropdown-item text-primary" href="<?= BASE_URL ?>Views/User/formRegClient.php">Inscription <strong>client</strong></a></li>
+                                <li><a class="dropdown-item text-primary" href="<?= BASE_URL ?>Views/User/formRegVendeur.php">Inscription <strong>professionel</strong></a></li>
                             </ul>
                         </div>
-                        <a href="/groupy/Views/User/formco.php" class="btn btn-outline-primary">Connexion</a>
+                        <a href="<?= BASE_URL ?>Views/User/formco.php" class="btn btn-outline-primary">Connexion</a>
                     <?php endif; ?>
                     
 
                     <?php if (isset($_SESSION['connectedUser'])): ?>
-                        <a href="/groupy/Views/User/dashboard.php" class="btn btn-outline-secondary">
+                        <a href="<?= BASE_URL ?>Views/User/dashboard.php" class="btn btn-outline-secondary">
                             <i class="bi bi-person-circle"></i>
                         </a>
                         <form action="#" method="post">

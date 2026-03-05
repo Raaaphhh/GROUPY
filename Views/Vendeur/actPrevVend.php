@@ -7,14 +7,14 @@ require '../../Controlleur/ProductController.php';
 
 $role = get_role($_SESSION['connectedUser']['id_user']);
 if (!isset($_SESSION['connectedUser']) || $role !== "vendeur") {
-    header('Location: /groupy/index.php'); 
+    header('Location: ' . BASE_URL . '/index.php'); 
     exit();
 }
 
 if(isset($_POST['published_prevente'])){
     unset($_POST['published_prevente']); 
     if(published_prevente($_POST)){
-        header('Location: /groupy/Views/Vendeur/actPrevVend.php');
+        header('Location: ' . BASE_URL . '/Views/Vendeur/actPrevVend.php');
         exit();
     }else{
         echo "publihed error";
@@ -23,7 +23,7 @@ if(isset($_POST['published_prevente'])){
 if(isset($_POST['update_prevente'])){
     unset($_POST['update_prevente']); 
     if(update_prevente($_POST)){
-        header('Location: /groupy/Views/Vendeur/actPrevVend.php');
+        header('Location: ' . BASE_URL . '/Views/Vendeur/actPrevVend.php');
         exit();
     }else{
         echo "del prevene error";
@@ -32,7 +32,7 @@ if(isset($_POST['update_prevente'])){
 if(isset($_POST['supprimer_prevente'])){
     unset($_POST['supprimer_prevente']); 
     if(del_prevente($_POST)){
-        header('Location: /groupy/Views/Vendeur/actPrevVend.php');
+        header('Location: ' . BASE_URL . '/Views/Vendeur/actPrevVend.php');
         exit();
     }else{
         echo "del prevene error";
@@ -149,8 +149,8 @@ $title = "Action - Produit - Vendeur - Groupy";
         </table>
     </div>
 
-    <a href="/groupy/Views/User/dashboard.php" class="btn btn-primary">Menu</a>
-    <a href="/groupy/Views/Vendeur/actProdVend.php" class="btn btn-success">Gestion prorduits</a>
+    <a href="<?= BASE_URL ?>Views/User/dashboard.php" class="btn btn-primary">Menu</a>
+    <a href="<?= BASE_URL ?>Views/Vendeur/actProdVend.php" class="btn btn-success">Gestion prorduits</a>
 
 </body>
 

@@ -10,7 +10,7 @@ if (isset($_POST['submit'])) {
   try{
     $result = login($_POST);
     if ($result === "bloque") {
-      header("Location: /groupy/Views/User/blocked.php");
+      header("Location: " . BASE_URL . "/Views/User/blocked.php");
       exit();
     } 
   }
@@ -48,7 +48,7 @@ $title = "Inscription Pro - Groupy";
                 </div>
             </form>
             <div class="text-center mt-3">
-              <a href="/groupy/Views/User/formRegClient.php" class="text-primary">Pas de compte ? Créez-en un ici</a>
+              <a href="<?= BASE_URL ?>Views/User/formRegClient.php" class="text-primary">Pas de compte ? Créez-en un ici</a>
             </div>
         </div>
       </div>

@@ -9,7 +9,7 @@ $lst_all_vendeur = get_all_vendeur();
 if (isset($_POST['bloquer'])) {
     unset($_POST['bloquer']);
     if (block_vendeur($_POST['id_vendeur'])) {
-        header('Location: /groupy/Views/Gestionnaire/actBloc.php');
+        header('Location: ' . BASE_URL . '/Views/Gestionnaire/actBloc.php');
         exit();
     } else {
         echo "block error"; 
@@ -19,7 +19,7 @@ if (isset($_POST['bloquer'])) {
 if(isset($_POST['debloquer'])){
     unset($_POST['debloquer']);
     if(debloquer($_POST['id_vendeur_a_debloquer'])){
-        header('Location: /groupy/Views/Gestionnaire/actBloc.php'); 
+        header('Location: ' . BASE_URL . '/Views/Gestionnaire/actBloc.php'); 
         exit(); 
     } else{
         echo "deblock error"; 

@@ -6,13 +6,13 @@ error_reporting(E_ALL);
 include '../../Layout/header.php'; 
 
 if (!isset($_SESSION['connectedUser'])) {
-    header('Location: /groupy/Views/User/formco.php'); 
+    header('Location: ' . BASE_URL . '/Views/User/formco.php'); 
     exit();
 }
 
 if (isset($_POST['submit_logout'])) {
     logout();
-    header('Location: /groupy/index.php'); 
+    header('Location: ' . BASE_URL . '/index.php'); 
     exit();
 }
 

@@ -2,7 +2,7 @@
 require '../../Layout/header.php'; 
 
 if (!isset($_SESSION['connectedUser']) || $_SESSION['connectedUser']['motdepasse_change'] === 0) {
-    header('Location: /groupy/Views/User/formco.php'); 
+    header('Location: ' . BASE_URL . '/Views/User/formco.php'); 
     exit();
 }
 
@@ -17,7 +17,7 @@ if (isset($_POST['gene_facture'])) {
 if (isset($_POST['signaler_produit'])) {
     unset($_POST['signaler_produit']);
     if (signalement($_POST)) {
-        header('Location: /groupy/Views/Client/factures.php');
+        header('Location: ' . BASE_URL . '/Views/Client/factures.php');
         exit();
     } else {
         echo "signalement error";

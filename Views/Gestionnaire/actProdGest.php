@@ -4,23 +4,23 @@ require '../../Controlleur/ProductController.php';
 
 $role = get_role($_SESSION['connectedUser']['id_user']);
 if (!isset($_SESSION['connectedUser']) || $role !== "gestionnaire") {
-    header('Location: /groupy/index.php'); 
+    header('Location: ' . BASE_URL . '/index.php'); 
     exit();
 }
 
 if(isset($_POST['add_categorie'])){
     array_pop($_POST);
     if(add_categorie($_POST)){
-        header('Location: /groupy/Views/Gestionnaire/actProdGest.php');
+        header('Location: ' . BASE_URL . '/Views/Gestionnaire/actProdGest.php');
         exit();
     }else{
         echo "ajout categorie erreur";
     }
 }
 if(isset($_POST['supprimer'])){
-    unset($_POST['supprimer']); // mieux que array_pop
+    unset($_POST['supprimer']);
     if(del_categorie($_POST)){
-        header('Location: /groupy/Views/Gestionnaire/actProdGest.php');
+        header('Location: ' . BASE_URL . '/Views/Gestionnaire/actProdGest.php');
         exit();
     }else{
         echo "ajout categorie erreur";
@@ -29,7 +29,7 @@ if(isset($_POST['supprimer'])){
 if(isset($_POST['modifier'])){
     array_pop($_POST);
     if(update_categorie($_POST)){
-        header('Location: /groupy/Views/Gestionnaire/actProdGest.php');
+        header('Location: ' . BASE_URL . '/Views/Gestionnaire/actProdGest.php');
         exit();
     }else{
         echo "modification categorie erreur";

@@ -2,14 +2,14 @@
 require '../../Layout/header.php'; 
 
 if (!isset($_SESSION['connectedUser'])) {
-    header('Location: /groupy/Views/User/formco.php'); 
+    header('Location: ' . BASE_URL . '/Views/User/formco.php'); 
     exit();
 }
 
 if(isset($_POST['submit'])) {
     array_pop($_POST);
     if (changePassword($_POST)){
-        header('Location: /groupy/views/user/dashboard.php');
+        header('Location: ' . BASE_URL . '/views/user/dashboard.php');
         exit();
     }
     else{
