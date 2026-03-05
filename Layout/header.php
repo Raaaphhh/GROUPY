@@ -54,16 +54,16 @@ if (isset($_POST['submit_logout'])) {
                                 Inscription
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <li><a class="dropdown-item text-primary" href="<?= BASE_URL ?>Views/User/formRegClient.php">Inscription <strong>client</strong></a></li>
-                                <li><a class="dropdown-item text-primary" href="<?= BASE_URL ?>Views/User/formRegVendeur.php">Inscription <strong>professionel</strong></a></li>
+                                <li><a class="dropdown-item text-primary" href="<?= BASE_URL ?>/Views/User/formRegClient.php">Inscription <strong>client</strong></a></li>
+                                <li><a class="dropdown-item text-primary" href="<?= BASE_URL ?>/Views/User/formRegVendeur.php">Inscription <strong>professionel</strong></a></li>
                             </ul>
                         </div>
-                        <a href="<?= BASE_URL ?>Views/User/formco.php" class="btn btn-outline-primary">Connexion</a>
+                        <a href="<?= BASE_URL ?>/Views/User/formco.php" class="btn btn-outline-primary">Connexion</a>
                     <?php endif; ?>
                     
 
                     <?php if (isset($_SESSION['connectedUser'])): ?>
-                        <a href="<?= BASE_URL ?>Views/User/dashboard.php" class="btn btn-outline-secondary">
+                        <a href="<?= BASE_URL ?>/Views/User/dashboard.php" class="btn btn-outline-secondary">
                             <i class="bi bi-person-circle"></i>
                         </a>
                         <form action="#" method="post">
