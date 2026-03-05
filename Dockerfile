@@ -1,7 +1,9 @@
 FROM php:8.3-apache
 
-# Installer l'extension GD
+# Installer git, unzip et les libs pour GD
 RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
