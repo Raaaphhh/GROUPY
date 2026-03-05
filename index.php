@@ -14,7 +14,8 @@ if(isset($_POST['participer'])){
     }
 }
 
-$role_user = get_role($_SESSION['connectedUser']['id_user']);
+// $role_user = get_role($_SESSION['connectedUser']['id_user']);
+$role_user = isset($_SESSION['connectedUser']) ? get_role($_SESSION['connectedUser']['id_user']) : null;
 $allpreventepublisheds = get_published_prevente();
 $title = "Accueil - Groupy"; 
 ?>
