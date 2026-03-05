@@ -166,8 +166,8 @@ $title = "Action - Produit - Vendeur - Groupy";
     </div>
 
 
-    <a href="<?= BASE_URL ?>Views/User/dashboard.php" class="btn btn-primary">Menu</a>
-    <a href="<?= BASE_URL ?>Views/Vendeur/actPrevVend.php" class="btn btn-success">Gestion prevente</a>
+    <a href="<?= BASE_URL ?>/Views/User/dashboard.php" class="btn btn-primary">Menu</a>
+    <a href="<?= BASE_URL ?>/Views/Vendeur/actPrevVend.php" class="btn btn-success">Gestion prevente</a>
 </div>
 
 <?php require '../../Layout/footer.php'; ?>

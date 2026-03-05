@@ -28,7 +28,7 @@ $title = "Dashboard - Groupy";
             <div class="card">
                 <div class="card-body text-center">
                     <h5 class="card-title">Profil</h5>
-                    <a href="<?= BASE_URL ?>Views/User/profil.php" class="btn btn-primary">Voir</a>
+                    <a href="<?= BASE_URL ?>/Views/User/profil.php" class="btn btn-primary">Voir</a>
                 </div>
             </div>
         </div>
@@ -38,7 +38,7 @@ $title = "Dashboard - Groupy";
             <div class="card">
                 <div class="card-body text-center">
                     <h5 class="card-title">Factures</h5>
-                    <a href="<?= BASE_URL ?>Views/Client/factures.php" class="btn btn-warning">Voir</a>
+                    <a href="<?= BASE_URL ?>/Views/Client/factures.php" class="btn btn-warning">Voir</a>
                 </div>
             </div>
         </div>
@@ -49,7 +49,7 @@ $title = "Dashboard - Groupy";
             <div class="card">
                 <div class="card-body text-center">
                     <h5 class="card-title">Gestion des produits</h5>
-                    <a href="<?= BASE_URL ?>Views/Vendeur/actProdVend.php" class="btn btn-success">Voir</a>
+                    <a href="<?= BASE_URL ?>/Views/Vendeur/actProdVend.php" class="btn btn-success">Voir</a>
                 </div>
             </div>
         </div>    
@@ -58,7 +58,7 @@ $title = "Dashboard - Groupy";
             <div class="card">
                 <div class="card-body text-center">
                     <h5 class="card-title">Gestion des préventes</h5>
-                    <a href="<?= BASE_URL ?>Views/Vendeur/actPrevVend.php" class="btn btn-success">Voir</a>
+                    <a href="<?= BASE_URL ?>/Views/Vendeur/actPrevVend.php" class="btn btn-success">Voir</a>
                 </div>
             </div>
         </div>    
@@ -69,7 +69,7 @@ $title = "Dashboard - Groupy";
             <div class="card">
                 <div class="card-body text-center">
                     <h5 class="card-title">Gestion</h5>
-                    <a href="<?= BASE_URL ?>Views/Gestionnaire/actProdGest.php" class="btn btn-success">Voir</a>
+                    <a href="<?= BASE_URL ?>/Views/Gestionnaire/actProdGest.php" class="btn btn-success">Voir</a>
                 </div>
             </div>
         </div>   
@@ -78,7 +78,7 @@ $title = "Dashboard - Groupy";
             <div class="card">
                 <div class="card-body text-center">
                     <h5 class="card-title">Blocage</h5>
-                    <a href="<?= BASE_URL ?>Views/Gestionnaire/actBloc.php" class="btn btn-success">Voir</a>
+                    <a href="<?= BASE_URL ?>/Views/Gestionnaire/actBloc.php" class="btn btn-success">Voir</a>
                 </div>
             </div>
         </div>   
