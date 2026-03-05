@@ -79,7 +79,7 @@ function register_Vendeur($data){
                     'email_pro' => $data['email_pro']
                 ];
                 deconect_db($pdo);
-                header("Location: /groupy/index.php");
+                header("Location: " . BASE_URL . "/index.php");
                 exit;
             }
         }
@@ -110,7 +110,7 @@ function register_Client($data){
             }
             else {
                 deconect_db($pdo);
-                header("Location: /groupy/index.php");
+                header("Location: " . BASE_URL . "/index.php");
                 exit;
             }
         }
@@ -133,7 +133,7 @@ function login($data){
             $_SESSION['connectedUser'] = $existUser;
             check_motdepasse_change();
             deconect_db($pdo);
-            header("Location: /groupy/index.php");
+            header("Location: " . BASE_URL . "/index.php");
             exit;
         }
         else{
@@ -294,7 +294,7 @@ function check_motdepasse_change() {
         if ($motdepasse_change === null) {
             return;
         } elseif ($motdepasse_change == 0) {
-            header("Location: /groupy/Views/User/changePassword.php");
+            header("Location: " . BASE_URL . "/Views/User/changePassword.php");
             exit;
         }
     }
@@ -621,5 +621,3 @@ function get_vendeur_blocked($idUser){
 function supprimer_vendeur(){
     // a coder
 }
-
-?> 

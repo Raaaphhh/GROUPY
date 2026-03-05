@@ -1,14 +1,14 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 require '../../Layout/headerAdmin.php';
 require '../Controlleur/AdminController.php';
 
 if (isset($_POST['submit_update'])) {
     array_pop($_POST);
     if (add_gestionnaire($_POST)) {
-        header("Location: /groupy/Admin/ViewsAdmin/dashboardAdmin.php");
+        header("Location: " . BASE_URL . "/Admin/ViewsAdmin/dashboardAdmin.php");
         exit;
     } else {
         echo "erreur";

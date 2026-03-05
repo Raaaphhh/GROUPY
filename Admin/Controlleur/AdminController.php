@@ -1,7 +1,7 @@
 <?php 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
 require 'BddConnControllerAdmin.php';
 
@@ -61,7 +61,7 @@ function login_admin($data){
                 return false;
             }
             deconnect_db_Admin($pdo);
-            header("Location: /groupy/Admin/ViewsAdmin/dashboardAdmin.php");
+            header("Location: " . BASE_URL . "/Admin/ViewsAdmin/dashboardAdmin.php");
             exit;
         }
         else{

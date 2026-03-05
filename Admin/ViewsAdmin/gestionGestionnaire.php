@@ -1,12 +1,12 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 require '../../Layout/headerAdmin.php';
 require '../Controlleur/AdminController.php';
 
 $lst_gestionnaire = get_gestionnaires();
-var_dump($lst_gestionnaire); // a supprimer 
+// var_dump($lst_gestionnaire); // a supprimer 
 ?>
 
 <body>
@@ -40,7 +40,7 @@ var_dump($lst_gestionnaire); // a supprimer
     </div>
 
     <div class="mt-3">
-        <a href="/groupy/Admin/ViewsAdmin/dashboardAdmin.php" class="btn btn-success">Retour</a>
+        <a href="<?= BASE_URL ?>/Admin/ViewsAdmin/dashboardAdmin.php" class="btn btn-success">Retour</a>
     </div>
 </body>
 

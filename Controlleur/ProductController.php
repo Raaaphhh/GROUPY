@@ -140,13 +140,15 @@ function verif_produit_prevente($idProduit){
 
 function uploadPic($file) {
     // Dossier de stockage physique
-    $target_dir = $_SERVER['DOCUMENT_ROOT'] . "/groupy/photo/";
+    // $target_dir = $_SERVER['DOCUMENT_ROOT'] . "/groupy/photo/";
+    $target_dir = ROOT_PATH . "/photo/";
     // Nom unique
     $file_name = uniqid() . "_" . basename($file["name"]);
     $target_file = $target_dir . $file_name;
 
     // Chemin public enregistré en BDD
-    $public_path = "/groupy/photo/" . $file_name;
+    // $public_path = "/groupy/photo/" . $file_name;
+    $public_path = BASE_URL . "/photo/" . $file_name;
 
     $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
     $allowed = ["jpg", "jpeg", "png", "gif"];
@@ -480,8 +482,3 @@ function update_prevente($data){
         }
     }
 }
-// ==================================
-
-
-
-?>
