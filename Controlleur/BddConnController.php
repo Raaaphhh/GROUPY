@@ -6,7 +6,6 @@ function loadEnv($path) {
     $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
         if (strpos(trim($line), '#') === 0) continue;
-
         list($name, $value) = explode('=', $line, 2);
         $_ENV[trim($name)] = trim($value);
     }
@@ -14,11 +13,15 @@ function loadEnv($path) {
 
 loadEnv(dirname(__DIR__) . '/.env');
 
+function getEnvVar($key) {
+    return $_ENV[$key] ?? getenv($key) ?: null;
+}
+
 function connect_bd() {
-    $host = $_ENV['DB_HOST'];
-    $dbname = $_ENV['DB_NAME'];
-    $username = $_ENV['DB_USER'];
-    $password = $_ENV['DB_PASS'];
+    $host = getEnvVar('DB_HOST');
+    $dbname = getEnvVar('DB_NAME');
+    $username = getEnvVar('DB_USER');
+    $password = getEnvVar('DB_PASS');
     try {
         $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
         return $pdo;

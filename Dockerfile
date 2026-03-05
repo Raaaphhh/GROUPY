@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.3-apache
 
 # Installer l'extension GD
 RUN apt-get update && apt-get install -y \
@@ -18,9 +18,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copier le projet
 COPY . /var/www/html/
 
-# Installer les dépendances
+# Installer les dépendances (sans les dev)
 WORKDIR /var/www/html
-RUN composer install --optimize-autoloader --no-scripts --no-interaction
+RUN composer install --optimize-autoloader --no-scripts --no-interaction --no-dev
 
 # Permissions
 RUN chown -R www-data:www-data /var/www/html
