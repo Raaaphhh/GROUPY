@@ -148,10 +148,8 @@ $title = "Action - Produit - Vendeur - Groupy";
         </tbody>
         </table>
     </div>
-
-    <a href="<?= BASE_URL ?>Views/User/dashboard.php" class="btn btn-primary">Menu</a>
-    <a href="<?= BASE_URL ?>Views/Vendeur/actProdVend.php" class="btn btn-success">Gestion prorduits</a>
-
+    <a href="<?= BASE_URL ?>/Views/User/dashboard.php" class="btn btn-primary">Menu</a>
+    <a href="<?= BASE_URL ?>/Views/Vendeur/actProdVend.php" class="btn btn-success">Gestion prorduits</a>
 </body>
 
 <?php require '../../Layout/footer.php'; ?>
