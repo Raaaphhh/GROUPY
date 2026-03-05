@@ -10,7 +10,8 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-install gd pdo pdo_mysql \
     && apt-get clean
 
-RUN a2dismod mpm_event && a2enmod mpm_prefork && a2enmod rewrite
+RUN rm -f /etc/apache2/mods-enabled/mpm_event.conf /etc/apache2/mods-enabled/mpm_event.load \
+    && a2enmod mpm_prefork rewrite
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
