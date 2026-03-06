@@ -18,7 +18,7 @@ function get_produits($idUserCo) {
             $req = "
                 SELECT p.id_produit, p.nom, p.description, p.prix, p.image, 
                     p.id_vendeur, p.created_at, p.updated_at,
-                    c.lib AS Categorie
+                    c.lib AS categorie
                 FROM Produit p
                 INNER JOIN Categorie c ON p.id_categorie_ = c.id_categorie
                 WHERE p.id_vendeur = $idUserCo
