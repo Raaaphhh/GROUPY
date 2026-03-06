@@ -22,7 +22,7 @@ if(isset($_POST['add_produit_produit'])){
         unset($_POST['add_produit_produit']);
         $_POST['pic'] = $file_path;
         if(add_produit($_POST)){
-            header('Location: ' . BASE_URL . '/Views/Vendeur/actProdvend.php');
+            header('Location: ' . BASE_URL . '/Views/Vendeur/actProdVend.php');
             exit();
         }else{
             echo "ajout prod erreur";
@@ -32,7 +32,7 @@ if(isset($_POST['add_produit_produit'])){
 if(isset($_POST['supprimer_produit'])){
     unset($_POST['supprimer']); 
     if(del_produit($_POST)){
-        header('Location: ' . BASE_URL . '/Views/Vendeur/actProdvend.php');
+        header('Location: ' . BASE_URL . '/Views/Vendeur/actProdVend.php');
         exit();
     }else{
         echo "del prod error";
@@ -42,7 +42,7 @@ if(isset($_POST['modifier_produit'])){
     var_dump($_POST);
     unset($_POST['modifier_produit']); 
     if(update_produit($_POST)){
-        header('Location: ' . BASE_URL . '/Views/Vendeur/actProdvend.php');
+        header('Location: ' . BASE_URL . '/Views/Vendeur/actProdVend.php');
         exit();
     }else{
         echo "del prod error";
@@ -52,7 +52,7 @@ if(isset($_POST['create_prevente'])){
     array_pop($_POST);
     if(create_prevente($_POST)){
         $_SESSION['successMessage'] = "Prevente créée avec succès.";
-        header('Location: ' . BASE_URL . '/Views/Vendeur/actProdvend.php');
+        header('Location: ' . BASE_URL . '/Views/Vendeur/actProdVend.php');
         exit();
     }else{
         echo "publihed error";

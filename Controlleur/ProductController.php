@@ -3,9 +3,9 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 // include 'BddConnController.php';
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 
 function get_produits($idUserCo) {
     $pdo = connect_bd();
@@ -21,8 +21,7 @@ function get_produits($idUserCo) {
                     c.lib AS categorie
                 FROM Produit p
                 INNER JOIN Categorie c ON p.id_categorie_ = c.id_categorie
-                WHERE p.id_vendeur = $idUserCo
-            ";
+                WHERE p.id_vendeur = $idUserCo";
             $stmt = $pdo->prepare($req);
             $stmt->execute();
             $produits = $stmt->fetchAll(PDO::FETCH_ASSOC);
