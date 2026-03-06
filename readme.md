@@ -1,4 +1,4 @@
-# 🛒 Groupy - Boutique de Vente Groupée
+# Groupy - Boutique de Vente Groupée
 
 **Groupy** est un projet d'école réalisé en **PHP pur** (sans framework). C'est une plateforme de commerce spécialisée dans la **vente groupée**, permettant de dynamiser les achats via un système de préventes.
 

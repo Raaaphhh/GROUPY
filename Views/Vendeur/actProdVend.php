@@ -186,4 +186,3 @@ $title = "Action - Produit - Vendeur - Groupy";
     });
   });
 </script>
-
