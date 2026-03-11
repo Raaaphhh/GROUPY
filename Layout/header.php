@@ -33,7 +33,8 @@ if (isset($_POST['submit_logout'])) {
     <!-- DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-    <style>
+    <!-- important pour le footer -->
+    <style> 
         html, body {
             min-height: 100vh;
         }
