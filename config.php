@@ -1,4 +1,5 @@
 <?php
 define('ROOT_PATH', __DIR__);
-define('BASE_URL', getenv('BASE_URL') !== false ? getenv('BASE_URL') : '/groupy');
+$envBase = getenv('BASE_URL');
+define('BASE_URL', ($envBase !== false && $envBase !== '') ? $envBase : '/groupy');
 require ROOT_PATH . '/Controlleur/UserController.php';
