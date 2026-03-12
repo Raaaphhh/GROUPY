@@ -49,6 +49,7 @@ if (isset($_POST['submit_logout'])) {
 </head>
 <body>
 <header>
+    <!-- DEBUG: BASE_URL = [<?= BASE_URL ?>] -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
         <a class="navbar-brand" href="<?= BASE_URL ?>/index.php">Groupy</a>
