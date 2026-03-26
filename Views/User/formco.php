@@ -6,6 +6,7 @@
 include '../../Layout/header.php';
 
 if (isset($_POST['submit'])) {
+  csrf_verify();
   array_pop($_POST);
   try{
     $result = login($_POST);
@@ -33,6 +34,7 @@ $title = "Inscription Pro - Groupy";
         </div>
         <div class="card-body">
             <form method="post" action="#">
+                <?= csrf_field() ?>
                 <div class="mb-3">
                     <label for="email" class="form-label">Adresse Email</label>
                     <input type="email" class="form-control" id="email" name="email" placeholder="exemple@mail.com" required>

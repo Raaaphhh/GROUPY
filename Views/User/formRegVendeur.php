@@ -1,11 +1,8 @@
-<?php 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-include '../../Layout/header.php'; 
+<?php
+include '../../Layout/header.php';
 
 if (isset($_POST['submit'])) {
+    csrf_verify();
     array_pop($_POST);
     try {
         register_Vendeur($_POST);
@@ -30,6 +27,7 @@ $title = "Inscription Pro - Groupy";
                 <div class="card-body">
 
                 <form method="post" action="#">
+                    <?= csrf_field() ?>
                     <div class="row">
                         <!-- Colonne gauche : Infos vendeur -->
                         <div class="col-md-6">

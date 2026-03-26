@@ -12,7 +12,8 @@ if (!isset($_SESSION['connectedUser']) || $role !== "vendeur") {
 }
 
 if(isset($_POST['published_prevente'])){
-    unset($_POST['published_prevente']); 
+    csrf_verify();
+    unset($_POST['published_prevente']);
     if(published_prevente($_POST)){
         header('Location: ' . BASE_URL . '/Views/Vendeur/actPrevVend.php');
         exit();
@@ -21,7 +22,8 @@ if(isset($_POST['published_prevente'])){
     }
 }
 if(isset($_POST['update_prevente'])){
-    unset($_POST['update_prevente']); 
+    csrf_verify();
+    unset($_POST['update_prevente']);
     if(update_prevente($_POST)){
         header('Location: ' . BASE_URL . '/Views/Vendeur/actPrevVend.php');
         exit();
@@ -30,7 +32,8 @@ if(isset($_POST['update_prevente'])){
     }
 }
 if(isset($_POST['supprimer_prevente'])){
-    unset($_POST['supprimer_prevente']); 
+    csrf_verify();
+    unset($_POST['supprimer_prevente']);
     if(del_prevente($_POST)){
         header('Location: ' . BASE_URL . '/Views/Vendeur/actPrevVend.php');
         exit();

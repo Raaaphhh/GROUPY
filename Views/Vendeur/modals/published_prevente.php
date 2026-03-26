@@ -10,6 +10,7 @@
       </div>
       <div class="modal-footer">
         <form method="post" action="#">
+          <?= csrf_field() ?>
           <input type="hidden" name="id_prevente" id="idPreventeAPublier">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
           <button type="submit" name="published_prevente" class="btn btn-primary">Publier</button>

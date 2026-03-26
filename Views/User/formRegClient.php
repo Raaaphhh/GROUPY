@@ -1,11 +1,8 @@
-<?php 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-include '../../Layout/header.php'; 
+<?php
+include '../../Layout/header.php';
 
 if (isset($_POST['submit'])) {
+  csrf_verify();
   array_pop($_POST);
   try {
     $result = register_Client($_POST);
@@ -35,6 +32,7 @@ $title = "Inscription Client - Groupy";
         <div class="card-body">
 
           <form method="post" action="#">
+            <?= csrf_field() ?>
             <div class="mb-3">
               <label for="nom" class="form-label">Nom</label>
               <input type="text" class="form-control" id="nom" name="nom" placeholder="Entrez votre nom" required>

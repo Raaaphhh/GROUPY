@@ -1,9 +1,5 @@
-<?php 
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-include '../../Layout/header.php'; 
+<?php
+include '../../Layout/header.php';
 
 if (!isset($_SESSION['connectedUser'])) {
     header('Location: ' . BASE_URL . '/Views/User/formco.php'); 
@@ -19,6 +15,7 @@ if (isset($_POST['submit_logout'])) {
 $role = get_role($_SESSION['connectedUser']['id_user']);
 
 if (isset($_POST['submit_update'])) {
+    csrf_verify();
     if (updateUser($_POST, $role)) {
         header("Location: profil.php");
         exit();
@@ -66,6 +63,7 @@ $title = "Profil - Groupy";
             Modifier mes infos
         </button>
         <form action="#" method="post">
+            <?= csrf_field() ?>
             <button class="btn btn-danger" type="submit" name="submit_logout">
                 Déconnexion
             </button>
@@ -82,6 +80,7 @@ $title = "Profil - Groupy";
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
             </div>
             <form action="#" method="post">
+                <?= csrf_field() ?>
                 <div class="modal-body text-start">
                 <input type="hidden" name="id_user" value="<?= $_SESSION['connectedUser']['id_user'] ?>">
 

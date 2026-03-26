@@ -56,9 +56,7 @@ function register_Vendeur($data){
         return false;
     }
     else{
-        echo "test";
         $insc_user = register_utilisateur($data);
-        echo "test";
         $idVendeur = $_SESSION['connectedUser']['id_user'];
         if ($insc_user === false) {
             return false;
@@ -105,7 +103,6 @@ function register_Client($data){
             $stmt = $pdo->prepare($req);
             $params = [$idClient];
             $result = $stmt->execute($params);
-            echo "test";
             if (!$result) {
                 echo "Erreur lors de l'insertion du client.";
                 return false;
@@ -345,14 +342,22 @@ function generate_facture_pdf($factureData) {
 
     $mpdf = new \Mpdf\Mpdf();
 
+    $nom          = htmlspecialchars($factureData['nom'] ?? '');
+    $nom_categorie = htmlspecialchars($factureData['nom_categorie'] ?? '');
+    $prix_prevente = htmlspecialchars($factureData['prix_prevente'] ?? '');
+    $date_limite  = htmlspecialchars($factureData['date_limite'] ?? '');
+    $statut       = htmlspecialchars($factureData['statut'] ?? '');
+    $image        = filter_var($factureData['image'] ?? '', FILTER_SANITIZE_URL);
+    $image        = (filter_var($image, FILTER_VALIDATE_URL) !== false) ? htmlspecialchars($image) : '';
+
     $html = "
     <h1>Facture Groupy</h1>
-    <p><strong>Nom :</strong> {$factureData['nom']}</p>
-    <p><strong>Catégorie :</strong> {$factureData['nom_categorie']}</p>
-    <p><strong>Prix :</strong> {$factureData['prix_prevente']} €</p>
-    <p><strong>Date limite :</strong> {$factureData['date_limite']}</p>
-    <p><strong>Statut :</strong> {$factureData['statut']}</p>
-    <img src='{$factureData['image']}' width='100'>
+    <p><strong>Nom :</strong> $nom</p>
+    <p><strong>Catégorie :</strong> $nom_categorie</p>
+    <p><strong>Prix :</strong> $prix_prevente €</p>
+    <p><strong>Date limite :</strong> $date_limite</p>
+    <p><strong>Statut :</strong> $statut</p>
+    " . ($image ? "<img src='$image' width='100'>" : '') . "
     ";
 
     $mpdf->WriteHTML($html);
@@ -393,7 +398,6 @@ function get_prevente_client($idUser){
 }
 
 function signalement($data){
-    var_dump($data);
     $pdo = connect_bd();
     if(!$pdo) {
         echo "Erreur de connexion à la base de données.";

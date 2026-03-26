@@ -26,23 +26,22 @@ function connect_bd() {
         $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
         return $pdo;
     } catch (PDOException $e) {
-        die("Erreur de connexion : " . $e->getMessage());
-        return null;
+        die("Erreur de connexion.");
     }
 }
 
 function connect_bdd_test() {
-    $host = "127.0.0.1";
-    $port = 3306; 
-    $dbname = "vente_groupe_test";
-    $username = "root";
-    $password = "mysql";
+    $host     = getEnvVar('DB_TEST_HOST') ?: '127.0.0.1';
+    $port     = getEnvVar('DB_TEST_PORT') ?: 3306;
+    $dbname   = getEnvVar('DB_TEST_NAME') ?: '';
+    $username = getEnvVar('DB_USER') ?: '';
+    $password = getEnvVar('DB_PASS') ?: '';
 
     try {
         $pdo = new PDO("mysql:host=$host;port=$port;dbname=$dbname;charset=utf8", $username, $password);
         return $pdo;
     } catch (PDOException $e) {
-        die("Erreur de connexion : " . $e->getMessage());
+        die("Erreur de connexion.");
     }
 }
 

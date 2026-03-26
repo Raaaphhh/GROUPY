@@ -10,6 +10,7 @@
             </div>
             <div class="modal-footer">
                 <form method="post" action="#">
+                        <?= csrf_field() ?>
                         <input type="hidden" name="id_vendeur" id="idVendeurABloquer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
                         <button type="submit" name="bloquer" class="btn btn-danger">Bloquer</button>

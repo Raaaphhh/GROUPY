@@ -9,6 +9,7 @@
         Êtes-vous sûr de vouloir signaler cette prevente ?
       </div>
         <form method="post" action="#">
+          <?= csrf_field() ?>
           <input type="hidden" name="id_produit" id="idProduitASignaler">
           <input type="hidden" name="id_user" id="idUserSignal">
 

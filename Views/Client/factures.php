@@ -9,12 +9,14 @@ if (!isset($_SESSION['connectedUser']) || $_SESSION['connectedUser']['motdepasse
 $lst_prev_client = get_prevente_client($_SESSION['connectedUser']['id_user']);
 
 if (isset($_POST['gene_facture'])) {
+    csrf_verify();
     unset($_POST['gene_facture']);
     generate_facture_pdf($_POST);
     exit; 
 }
 
 if (isset($_POST['signaler_produit'])) {
+    csrf_verify();
     unset($_POST['signaler_produit']);
     if (signalement($_POST)) {
         header('Location: ' . BASE_URL . '/Views/Client/factures.php');
@@ -59,6 +61,7 @@ $title = "Factures - Client - Groupy";
                 <td><?= htmlspecialchars($prevente['statut']) ?></td>
                 <td>
                     <form action="" method="POST">
+                        <?= csrf_field() ?>
                         <input type="hidden" name="id_prevente" value="<?= htmlspecialchars($prevente['id_prevente']) ?>">
                         <input type="hidden" name="date_limite" value="<?= htmlspecialchars($prevente['date_limite']) ?>">
                         <input type="hidden" name="nom" value="<?= htmlspecialchars($prevente['nom']) ?>">

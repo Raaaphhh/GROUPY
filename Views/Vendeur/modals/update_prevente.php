@@ -6,6 +6,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
       <form method="post" action="#">
+        <?= csrf_field() ?>
         <div class="modal-body text-start">
             <input type="hidden" name="id_prevente" id="update_id_prevente">
 

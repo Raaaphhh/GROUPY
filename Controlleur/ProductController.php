@@ -16,14 +16,14 @@ function get_produits($idUserCo) {
     else{
         try{
             $req = "
-                SELECT p.id_produit, p.nom, p.description, p.prix, p.image, 
+                SELECT p.id_produit, p.nom, p.description, p.prix, p.image,
                     p.id_vendeur, p.created_at, p.updated_at,
                     c.lib AS categorie
                 FROM Produit p
                 INNER JOIN Categorie c ON p.id_categorie_ = c.id_categorie
-                WHERE p.id_vendeur = $idUserCo";
+                WHERE p.id_vendeur = ?";
             $stmt = $pdo->prepare($req);
-            $stmt->execute();
+            $stmt->execute([$idUserCo]);
             $produits = $stmt->fetchAll(PDO::FETCH_ASSOC);
             deconect_db($pdo);
             return $produits;
@@ -47,13 +47,13 @@ function get_prevente(){
             $req = "
                 SELECT Prevente.*, Produit.*, Categorie.lib AS nom_categorie
                 FROM Prevente
-                INNER JOIN Produit 
+                INNER JOIN Produit
                     ON Prevente.id_produit = Produit.id_produit
-                INNER JOIN Categorie 
+                INNER JOIN Categorie
                     ON Produit.id_categorie_ = Categorie.id_categorie
-                WHERE Produit.id_vendeur = $idUser;";
+                WHERE Produit.id_vendeur = ?";
             $stmt = $pdo->prepare($req);
-            $stmt->execute();
+            $stmt->execute([$idUser]);
             $preventes = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if($preventes){
                 deconect_db($pdo);

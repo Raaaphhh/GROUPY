@@ -7,6 +7,7 @@ if (!isset($_SESSION['connectedUser'])) {
 }
 
 if(isset($_POST['submit'])) {
+    csrf_verify();
     array_pop($_POST);
     if (changePassword($_POST)){
         header('Location: ' . BASE_URL . '/views/user/dashboard.php');
@@ -25,6 +26,7 @@ $title = "Change mot de passe - Groupy";
 
 <div class="container">
     <form action="" method="post" class="w-50 mx-auto">
+        <?= csrf_field() ?>
         <div class="mb-3">
             <label for="new_password" class="form-label">Nouveau mot de passe</label>
             <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Entrez votre nouveau mot de passe" required>

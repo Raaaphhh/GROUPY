@@ -2,8 +2,9 @@
 require __DIR__ . '/../config.php';
 
 if (isset($_POST['submit_logout'])) {
+    csrf_verify();
     logout();
-    header('Location: ' . BASE_URL . '/index.php'); 
+    header('Location: ' . BASE_URL . '/index.php');
     exit();
 }
 ?>
@@ -49,7 +50,6 @@ if (isset($_POST['submit_logout'])) {
 </head>
 <body>
 <header>
-    <!-- DEBUG: BASE_URL = [<?= BASE_URL ?>] -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
         <a class="navbar-brand" href="<?= BASE_URL ?>/index.php">Groupy</a>
@@ -80,8 +80,9 @@ if (isset($_POST['submit_logout'])) {
                             <i class="bi bi-person-circle"></i>
                         </a>
                         <form action="#" method="post">
+                            <?= csrf_field() ?>
                             <button class="btn btn-danger" type="submit" name="submit_logout">
-                                <i class="bi bi-box-arrow-right"></i> 
+                                <i class="bi bi-box-arrow-right"></i>
                             </button>
                         </form>
                     <?php endif; ?>

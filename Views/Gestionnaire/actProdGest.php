@@ -1,14 +1,15 @@
 <?php
-require '../../Layout/header.php'; 
+require '../../Layout/header.php';
 require '../../Controlleur/ProductController.php';
 
 $role = get_role($_SESSION['connectedUser']['id_user']);
 if (!isset($_SESSION['connectedUser']) || $role !== "gestionnaire") {
-    header('Location: ' . BASE_URL . '/index.php'); 
+    header('Location: ' . BASE_URL . '/index.php');
     exit();
 }
 
 if(isset($_POST['add_categorie'])){
+    csrf_verify();
     array_pop($_POST);
     if(add_categorie($_POST)){
         header('Location: ' . BASE_URL . '/Views/Gestionnaire/actProdGest.php');
@@ -18,6 +19,7 @@ if(isset($_POST['add_categorie'])){
     }
 }
 if(isset($_POST['supprimer'])){
+    csrf_verify();
     unset($_POST['supprimer']);
     if(del_categorie($_POST)){
         header('Location: ' . BASE_URL . '/Views/Gestionnaire/actProdGest.php');
@@ -27,6 +29,7 @@ if(isset($_POST['supprimer'])){
     }
 }
 if(isset($_POST['modifier'])){
+    csrf_verify();
     array_pop($_POST);
     if(update_categorie($_POST)){
         header('Location: ' . BASE_URL . '/Views/Gestionnaire/actProdGest.php');
@@ -144,6 +147,7 @@ $title = "Action - Gestionnaire - Groupy";
       </div>
       <div class="modal-footer">
         <form method="post" action="#">
+            <?= csrf_field() ?>
             <input type="hidden" name="id_categorie" id="idCategorieASupprimer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
             <button type="submit" name="supprimer" class="btn btn-danger">Supprimer</button>
@@ -162,6 +166,7 @@ $title = "Action - Gestionnaire - Groupy";
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
         </div>
         <form action="#" method="post">
+            <?= csrf_field() ?>
             <div class="modal-body text-start">
                 <div class="mb-3">
                     <label class="form-label">Nom</label>
@@ -187,6 +192,7 @@ $title = "Action - Gestionnaire - Groupy";
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
       <form method="post" action="#">
+        <?= csrf_field() ?>
         <div class="modal-body text-start">
             <input type="hidden" name="id_categorie" id="idCategorieAModifier">
             <div class="mb-3">

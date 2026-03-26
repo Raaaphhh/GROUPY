@@ -1,12 +1,10 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 require '../../Layout/header.php';
 
 $lst_all_vendeur = get_all_vendeur();
 
 if (isset($_POST['bloquer'])) {
+    csrf_verify();
     unset($_POST['bloquer']);
     if (block_vendeur($_POST['id_vendeur'])) {
         header('Location: ' . BASE_URL . '/Views/Gestionnaire/actBloc.php');
@@ -17,6 +15,7 @@ if (isset($_POST['bloquer'])) {
 }
 
 if(isset($_POST['debloquer'])){
+    csrf_verify();
     unset($_POST['debloquer']);
     if(debloquer($_POST['id_vendeur_a_debloquer'])){
         header('Location: ' . BASE_URL . '/Views/Gestionnaire/actBloc.php'); 

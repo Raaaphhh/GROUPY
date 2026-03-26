@@ -1,6 +1,6 @@
 <?php
 
-function pariticipation($data){
+function participation($data){
     $pdo = connect_bd();
     if(!$pdo) {
         echo "Erreur de connexion à la base de données.";
