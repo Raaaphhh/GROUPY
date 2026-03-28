@@ -42,11 +42,11 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const createPreventeModal = document.getElementById('pulbishedProduitModal');
-    pulbishedProduitModal.addEventListener('show.bs.modal', function (event) {
+    createPreventeModal.addEventListener('show.bs.modal', function (event) {
         const button = event.relatedTarget;
 
-        pulbishedProduitModal.querySelector('#published_id_produit').value = button.getAttribute('data-id');
-        pulbishedProduitModal.querySelector('#published_nom_produit').value = button.getAttribute('data-nom');
+        createPreventeModal.querySelector('#published_id_produit').value = button.getAttribute('data-id');
+        createPreventeModal.querySelector('#published_nom_produit').value = button.getAttribute('data-nom');
     });
 });
 </script>

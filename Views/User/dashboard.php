@@ -4,7 +4,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 require '../../Layout/header.php'; 
 
-if(get_vendeur_blocked($_SESSION['connectedUser']['id_user']) === "bloqué"){
+if(get_vendeur_blocked($_SESSION['connectedUser']['id_user']) === true){
     header('Location: ' . BASE_URL . '/Views/User/blocked.php'); 
     exit();
 }

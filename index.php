@@ -7,7 +7,7 @@ require 'Controlleur/AccueilController.php';
 
 if(isset($_POST['participer'])){
     array_pop($_POST);
-    if(pariticipation($_POST)){
+    if(participation($_POST)){
         header("Location: index.php");
     } else {
         echo "";
