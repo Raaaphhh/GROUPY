@@ -6,7 +6,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
       </div>
       <div class="modal-body">
-        Êtes-vous sûr de vouloir signaler cette prevente ?
+        Êtes-vous sûr de vouloir signaler ce produit ? Cette action est définitive.
       </div>
         <form method="post" action="#">
           <?= csrf_field() ?>
