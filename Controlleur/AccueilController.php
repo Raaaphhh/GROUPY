@@ -1,5 +1,18 @@
 <?php
 
+function cloturer_preventes_expirees(){
+    $pdo = connect_bd();
+    if(!$pdo) return false;
+    try{
+        $req = "UPDATE Prevente SET statut = 'Fermée' WHERE date_limite < CURDATE() AND statut = 'Active'";
+        $pdo->exec($req);
+        deconect_db($pdo);
+    }
+    catch (PDOException $e) {
+        return false;
+    }
+}
+
 function participation($data){
     $pdo = connect_bd();
     if(!$pdo) {
@@ -60,6 +73,7 @@ function verif_participation($idUser, $idPrevente){
 }
 
 function get_published_prevente(){
+    cloturer_preventes_expirees();
     $pdo = connect_bd();
     if(!$pdo) {
         echo "Erreur de connexion à la base de données.";

@@ -43,6 +43,7 @@ function get_prevente(){
     }
     else{
         try{
+            $pdo->exec("UPDATE Prevente SET statut = 'Fermée' WHERE date_limite < CURDATE() AND statut = 'Active'");
             $idUser = $_SESSION['connectedUser']['id_user'];
             $req = "
                 SELECT Prevente.*, Produit.*, Categorie.lib AS nom_categorie

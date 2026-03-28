@@ -91,6 +91,8 @@ $title = "Action - Produit - Vendeur - Groupy";
                             echo '#ccffcc';
                         } elseif ($prevente['statut'] === 'Active') {
                             echo '#cce5ff';
+                        } elseif ($prevente['statut'] === 'Fermée') {
+                            echo '#ffe0b2';
                         } else {
                             echo '#e0e0e0';
                         }
