@@ -31,8 +31,17 @@ require 'modals/deblock.php';
 $title = "Action - Blocage - Groupy"; 
 ?>
 
-<body>
-    <div class="table-responsive">
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-0"><i class="bi bi-shield-exclamation text-danger"></i> Gestion des vendeurs</h2>
+        <p class="text-muted small mb-0">Surveillez les signalements et gérez les accès vendeurs.</p>
+    </div>
+    <a href="<?= BASE_URL ?>/Views/User/dashboard.php" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Retour
+    </a>
+</div>
+
+<div class="table-responsive">
         <table id="bloc" class="table table-striped table-bordered align-middle">
         <thead class="table-dark">
             <tr>
@@ -95,7 +104,12 @@ $title = "Action - Blocage - Groupy";
         </tbody>
         </table>
     </div>
-</body>
+
+<div class="mt-3">
+    <a href="<?= BASE_URL ?>/Views/User/dashboard.php" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Retour au dashboard
+    </a>
+</div>
 
 <?php require '../../Layout/footer.php'; ?>
 

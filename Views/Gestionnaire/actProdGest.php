@@ -46,20 +46,26 @@ $utilisateurs = get_all_users(); //a coder
 $title = "Action - Gestionnaire - Groupy"; 
 ?>
 
-<body class="bg-light text-center">
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="mb-0"><i class="bi bi-list-ul text-success"></i> Catégories & clients</h2>
+        <p class="text-muted small mb-0">Gérez les catégories de produits et consultez les clients.</p>
+    </div>
+    <a href="<?= BASE_URL ?>/Views/User/dashboard.php" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Retour
+    </a>
+</div>
 
-    <h1 class="mb-4">Gestion Produits</h1>
-    
-    <button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addCategorietModal">
-        <i class="bi bi-plus-square"></i> Catégorie
+<div class="mb-4">
+    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addCategorietModal">
+        <i class="bi bi-plus-square"></i> Ajouter une catégorie
     </button>
-    
-    <br><br>
+</div>
 
     <!-- liste des catégories -->
     <?php if ($categories && $role == "gestionnaire") : ?>
-    <h3>Liste des catégories :</h3>
-    <table class="table table-bordered table-striped w-50 mx-auto">
+    <h5 class="mb-3">Liste des catégories</h5>
+    <table id="tableCategories" class="table table-bordered table-striped w-50 mx-auto">
         <thead>
             <tr>
                 <th>Nom</th>
@@ -95,15 +101,13 @@ $title = "Action - Gestionnaire - Groupy";
         </tbody>
     </table>
     <?php elseif ($role == "gestionnaire"): ?>
-        <p>Aucune produit publié pour le moment.</p>
+        <p class="text-muted">Aucune catégorie pour le moment.</p>
     <?php endif; ?>
-
-    <br><br>
 
     <!-- liste des utilisateurs -->
     <?php if ($utilisateurs && $role == "gestionnaire") : ?>
-    <h3 class="">Liste des Utilisateurs :</h3>
-    <table class="table table-bordered table-striped w-50 mx-auto">
+    <h5 class="mt-5 mb-3">Liste des clients</h5>
+    <table id="tableClients" class="table table-bordered table-striped w-50 mx-auto">
         <thead>
             <tr>
                 <th>Nom</th>
@@ -128,10 +132,14 @@ $title = "Action - Gestionnaire - Groupy";
         </tbody>
     </table>
     <?php elseif ($role == "gestionnaire"): ?>
-        <p>Aucun client pour le moment.</p>
+        <p class="text-muted mt-3">Aucun client pour le moment.</p>
     <?php endif; ?>
-    
-</body>
+
+<div class="mt-4">
+    <a href="<?= BASE_URL ?>/Views/User/dashboard.php" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left"></i> Retour au dashboard
+    </a>
+</div>
 
 
 <!-- modal validation supression CATEGORIE -->
@@ -214,6 +222,22 @@ $title = "Action - Gestionnaire - Groupy";
 <?php require '../../Layout/footer.php'; ?>
 
 <script>
+$(document).ready(function () {
+    const dtLang = {
+        search: "Rechercher :",
+        lengthMenu: "Afficher _MENU_ entrées",
+        info: "Affichage de _START_ à _END_ sur _TOTAL_ entrées",
+        paginate: { previous: "Précédent", next: "Suivant" },
+        zeroRecords: "Aucune correspondance trouvée"
+    };
+    if ($('#tableCategories').length) {
+        $('#tableCategories').DataTable({ pageLength: 10, language: dtLang });
+    }
+    if ($('#tableClients').length) {
+        $('#tableClients').DataTable({ pageLength: 10, language: dtLang });
+    }
+});
+
 document.addEventListener('DOMContentLoaded', function () {
     // suppression
     const deleteModal = document.getElementById('deleteModal');
